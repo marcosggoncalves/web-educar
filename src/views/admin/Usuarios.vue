@@ -4,7 +4,7 @@
     <v-dialog v-model="dialog" max-width="600px">
       <v-card>
         <v-card-title>
-          <b>Cadastrar usuário</b>
+          <b>{{title}} usuário</b>
         </v-card-title>
         <v-divider></v-divider>
 
@@ -79,24 +79,64 @@
       </v-card>
     </v-dialog>
 
-    <v-row align="center" justify="space-between" class="linha-top">
-      <h2>Cadastro de usuários</h2>
-      
-      <v-btn tile class="button-cadastro" color="#00a65a" @click="modal">
-        <v-icon left>
-          mdi-pencil
-        </v-icon>
+    
+    <!-- list select -->
+    <v-simple-table class="elevation-3 mt-2x dense">
+      <template v-slot:top>
+        <v-row align="center" justify="space-between" class="linha-top">
+          <h2>Cadastro de usuários</h2>
+          
+          <v-btn tile class="button-cadastro" color="#00a65a" @click="modal">
+            <v-icon left>
+              mdi-pencil
+            </v-icon>
 
-        Cadastrar usuário
-      </v-btn>
-    </v-row>
-    <v-data-table
-      :headers="headers"
-      :items="usuarios"
-      :items-per-page="8"
-      class="elevation-1"
-    >
-    </v-data-table>
+            Cadastrar usuário
+          </v-btn>
+        </v-row>
+      </template>
+      <template v-slot:default>
+        <thead>
+          <tr>
+            <th class="text-left">ID</th>
+            <th class="text-left">Nome</th>
+            <th class="text-left">Email</th>
+            <th class="text-left">Permissão</th>
+            <th class="text-left">Instituição</th>
+            <th class="text-left">Tipo usuário</th>
+            <th class="text-left">Ações</th>
+          </tr>
+        </thead>
+        <tbody v-if="usuarios.length > 0">
+          <tr v-for="item in usuarios" :key="item.id">
+            <td class="text-left">{{ item.id }}</td>
+            <td class="text-left">{{ item.nome }}</td>
+            <td class="text-left">{{ item.email }}</td>
+            <td class="text-left">{{ item.grupo_acesso}}</td>
+            <td class="text-left">{{ item.instituicao_nome}}</td>
+            <td class="text-left">{{ item.tipo_usuario}}</td>
+            <td class="text-left">
+              <v-menu bottom left>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn dark icon v-bind="attrs" v-on="on" color="black">
+                    <v-icon>mdi-dots-vertical</v-icon>
+                  </v-btn>
+                </template>
+
+                <v-list>
+                  <v-list-item @click="excluir(item.id)">
+                    <v-list-item-title>Excluir</v-list-item-title>
+                  </v-list-item>
+                  <v-list-item @click="editar(item)">
+                    <v-list-item-title>Alterar</v-list-item-title>
+                  </v-list-item>
+                </v-list>
+              </v-menu>
+            </td>
+          </tr>
+        </tbody>
+      </template>
+    </v-simple-table>
   </div>
 
   
@@ -104,16 +144,20 @@
 
 <script>
 import axios from '../../../axios/service.js';
+import Swal from "sweetalert2";
+
 export default {
   name: 'usuarios',
   data: ()=>{
     
     return{
+      title: 'Cadastrar',
       dialog: false,
       show: false,
       carregandoSave: false,
 
       usuario:{
+        id: '',
         nome: '',
         email: '',
         grupo_id: '',
@@ -133,20 +177,6 @@ export default {
       grupos: [],
       instituicoes: [],
       usuarios: [],
-      
-      headers: [
-        {
-          text: 'Nome',
-          align: 'start',
-          sortable: false,
-          value: 'nome',
-        },
-        { text: 'Email', value: 'email' },
-        { text: 'Permissão', value: 'grupo_acesso' },
-        { text: 'tipo usuario', value: 'tipo_usuario' },
-        { text: 'Instituição', value: 'instituicao_nome' },
-      ],
-
     }
   },
 
@@ -158,6 +188,7 @@ export default {
 
     },
     modal(){
+      this.title = 'Cadastrar';
       this.dialog = !this.dialog;
     },
 
@@ -225,12 +256,14 @@ export default {
 
     cadastrar_usuario_organizacao(){
       this.carregandoSave = true;
-      axios.post('/api/v1/novo-usuario', {
+      
+      let url = this.usuario.id ? '/api/v1/alterar-usuario/' + this.usuario.id : '/api/v1/novo-usuario';
+      axios.post(url, {
         nome: this.usuario.nome,
         senha: this.usuario.senha,
         email: this.usuario.email,
-        grupo_id: this.usuario.grupo_id,
-        tipo_usuario: 'Organização',
+        grupo_id: localStorage.getItem('token_uems') ? this.usuario.grupo_id : 1,
+        tipo_usuario: localStorage.getItem('token_uems') ? 'Organização' : 'Alunos',
         instituicao_id: this.usuario.instituicao_id
       })
 
@@ -263,6 +296,55 @@ export default {
           });
         }
         this.carregandoSave = false;
+      });
+    },
+
+    editar(item){
+      this.title = 'Editar';
+      this.dialog = !this.dialog;
+      this.usuario.id = item.id;
+      this.usuario.nome = item.nome;
+      this.usuario.email = item.email;
+      this.usuario.grupo_id = item.grupo_id;
+      this.usuario.instituicao_id = item.instituicao_id;
+      this.usuario.senha = item.senha;
+
+      console.log(this.usuario);
+    },
+
+    excluir(item){
+      Swal.fire({
+        title: `O usuário será deletado!`,
+        text: `Deseja remover esse registro?`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#007744",
+        cancelButtonColor: "#d33",
+        cancelButtonText: "Cancelar",
+        confirmButtonText: `Sim, pode deletar`,
+        reverseButtons: true,
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          let url = '/api/v1/excluir-usuario/' + item;
+          let res = await axios.delete(url);
+          console.log(res);
+          if (res.data.status) {
+            Swal.fire({
+              title: "Excluido!",
+              text: res.data.message,
+              icon: "success",
+              confirmButtonColor: "#007744",
+            });
+            this.carregar_usuarios();
+          } else {
+            Swal.fire({
+              title: "Erro encontrado!",
+              text: res.data.message,
+              icon: "warning",
+              confirmButtonColor: "#d33",
+            });
+          }
+        }
       });
     }
 

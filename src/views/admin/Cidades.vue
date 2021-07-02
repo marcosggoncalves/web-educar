@@ -1,9 +1,11 @@
 <template>
   <div class="cadastro-cidade">
+
+    <!-- modal cadastro -->
     <v-dialog v-model="dialog" max-width="600px">
       <v-card>
         <v-card-title>
-          <b>Cadastrar cidade</b>
+          <b>{{title}} cidade</b>
         </v-card-title>
         <v-divider></v-divider>
 
@@ -39,27 +41,64 @@
         </v-form>
       </v-card>
     </v-dialog>
-    <v-row align="center" justify="space-between" class="linha-top">
-      <h2>Cadastro de cidades</h2>
 
-      <v-btn tile class="button-cadastro" color="#00a65a" @click="modal">
-        <v-icon left> mdi-pencil </v-icon>
+    <!-- list select -->
+    <v-simple-table class="elevation-3 mt-2x dense">
+      <template v-slot:top>
+        <v-row align="center" justify="space-between" class="linha-top">
+          <h2>Cidades Cadastradas</h2>
 
-        Cadastrar cidade
-      </v-btn>
-    </v-row>
-    <v-data-table
-      :headers="headers"
-      :items="cidades"
-      :items-per-page="8"
-      class="elevation-1"
-    >
-    </v-data-table>
+          <v-btn tile class="button-cadastro" color="#00a65a" @click="modal">
+            <v-icon left> mdi-pencil </v-icon>
+
+            Cadastrar cidade
+          </v-btn>
+        </v-row>
+      </template>
+      <template v-slot:default>
+        <thead>
+          <tr>
+            <th class="text-left">ID</th>
+            <th class="text-left">Cidade</th>
+            <th class="text-left">UF</th>
+            <th class="text-left">Criado em</th>
+            <th class="text-left">Ações</th>
+          </tr>
+        </thead>
+        <tbody v-if="cidades.length > 0">
+          <tr v-for="item in cidades" :key="item.id">
+            <td class="text-left">{{ item.id }}</td>
+            <td class="text-left">{{ item.nome }}</td>
+            <td class="text-left">{{ item.uf }}</td>
+            <td class="text-left">{{ item.created_at}}</td>
+            <td class="text-left">
+              <v-menu bottom left>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn dark icon v-bind="attrs" v-on="on" color="black">
+                    <v-icon>mdi-dots-vertical</v-icon>
+                  </v-btn>
+                </template>
+
+                <v-list>
+                  <v-list-item @click="excluir(item.id)">
+                    <v-list-item-title>Excluir</v-list-item-title>
+                  </v-list-item>
+                  <v-list-item @click="editar(item)">
+                    <v-list-item-title>Alterar</v-list-item-title>
+                  </v-list-item>
+                </v-list>
+              </v-menu>
+            </td>
+          </tr>
+        </tbody>
+      </template>
+    </v-simple-table>
   </div>
 </template>
 
 <script>
 import axios from "../../../axios/service.js";
+import Swal from "sweetalert2";
 
 export default {
   name: "cidades",
@@ -69,7 +108,9 @@ export default {
       cidades: [],
       dialog: false,
       carregandoSave: false,
+      title: 'Cadastrar',
       cidade: {
+        id: '',
         nome: "",
         uf: "",
       },
@@ -77,17 +118,6 @@ export default {
         nome: "",
         uf: "",
       },
-      headers: [
-        {
-          text: "ID",
-          align: "start",
-          sortable: false,
-          value: "id",
-        },
-        { text: "Nome", value: "nome" },
-        { text: "UF", value: "uf" },
-        { text: "criado em", value: "created_at" },
-      ],
     };
   },
 
@@ -95,8 +125,11 @@ export default {
     clear() {
       this.error = {};
       this.cidade = {};
+    
     },
+
     modal() {
+      this.title = 'Cadastrar'
       this.clear();
       this.dialog = !this.dialog;
     },
@@ -116,8 +149,10 @@ export default {
     },
 
     cadastro_cidade() {
+
+      let url = this.cidade.id ? '/api/v1/alterar-cidade/' + this.cidade.id : '/api/v1/nova-cidade';
       axios
-        .post("/api/v1/nova-cidade", {
+        .post(url, {
           nome: this.cidade.nome,
           uf: this.cidade.uf,
         })
@@ -151,6 +186,50 @@ export default {
           this.carregandoSave = false;
         });
     },
+
+    editar(item){
+      this.title = 'Editar';
+      this.dialog = !this.dialog;
+      this.cidade.id = item.id;
+      this.cidade.nome = item.nome;
+      this.cidade.uf = item.uf;
+    },
+    
+    excluir(item) {
+      Swal.fire({
+        title: `Cidade será deletada!`,
+        text: `Deseja remover esse registro?`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#007744",
+        cancelButtonColor: "#d33",
+        cancelButtonText: "Cancelar",
+        confirmButtonText: `Sim, pode deletar`,
+        reverseButtons: true,
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          let url = '/api/v1/excluir-cidade/' + item;
+          let res = await axios.delete(url);
+          console.log(res);
+          if (res.data.status) {
+            Swal.fire({
+              title: "Excluido!",
+              text: res.data.message,
+              icon: "success",
+              confirmButtonColor: "#007744",
+            });
+            this.carregar_cidades();
+          } else {
+            Swal.fire({
+              title: "Erro encontrado!",
+              text: res.data.message,
+              icon: "warning",
+              confirmButtonColor: "#d33",
+            });
+          }
+        }
+      });
+    },
   },
 
   mounted() {
@@ -167,7 +246,7 @@ export default {
 }
 
 .linha-top {
-  width: 100%;
+  width: 98%!important;
   margin: 0 auto;
 }
 

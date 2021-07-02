@@ -4,7 +4,7 @@
     <v-dialog v-model="dialog" max-width="600px">
       <v-card>
         <v-card-title>
-          <b>Cadastrar instituição</b>
+          <b>{{title}} instituição</b>
         </v-card-title>
         <v-divider></v-divider>
 
@@ -48,24 +48,58 @@
         </v-form>
       </v-card>
     </v-dialog>
-    <v-row align="center" justify="space-between" class="linha-top">
-      <h2>Cadastro de instituições</h2>
-      
-      <v-btn tile class="button-cadastro" color="#00a65a" @click="modal">
-        <v-icon left>
-          mdi-pencil
-        </v-icon>
+    
+    <!-- list select -->
+    <v-simple-table class="elevation-3 mt-2x dense">
+      <template v-slot:top>
+        <v-row align="center" justify="space-between" class="linha-top">
+          <h2>Cadastro de instituições</h2>
+          
+          <v-btn tile class="button-cadastro" color="#00a65a" @click="modal">
+            <v-icon left>
+              mdi-pencil
+            </v-icon>
 
-        Cadastrar instituição
-      </v-btn>
-    </v-row>
-    <v-data-table
-      :headers="headers"
-      :items="instituicoes"
-      :items-per-page="8"
-      class="elevation-1"
-    >
-    </v-data-table>
+            Cadastrar instituição
+          </v-btn>
+        </v-row>
+      </template>
+      <template v-slot:default>
+        <thead>
+          <tr>
+            <th class="text-left">ID</th>
+            <th class="text-left">Nome</th>
+            <th class="text-left">Criado em</th>
+            <th class="text-left">Ações</th>
+          </tr>
+        </thead>
+        <tbody v-if="instituicoes.length > 0">
+          <tr v-for="item in instituicoes" :key="item.id">
+            <td class="text-left">{{ item.id }}</td>
+            <td class="text-left">{{ item.nome }}</td>
+            <td class="text-left">{{ item.created_at}}</td>
+            <td class="text-left">
+              <v-menu bottom left>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn dark icon v-bind="attrs" v-on="on" color="black">
+                    <v-icon>mdi-dots-vertical</v-icon>
+                  </v-btn>
+                </template>
+
+                <v-list>
+                  <v-list-item @click="excluir(item.id)">
+                    <v-list-item-title>Excluir</v-list-item-title>
+                  </v-list-item>
+                  <v-list-item @click="editar(item)">
+                    <v-list-item-title>Alterar</v-list-item-title>
+                  </v-list-item>
+                </v-list>
+              </v-menu>
+            </td>
+          </tr>
+        </tbody>
+      </template>
+    </v-simple-table>
   </div>
 
   
@@ -73,16 +107,21 @@
 
 <script>
 import axios from '../../../axios/service.js';
+import Swal from "sweetalert2";
+
 export default {
   name: 'instituicoes',
 
   data: ()=>{
 
     return{
+
+      title: 'Cadastrar',
       dialog: false,
       carregandoSave: false,
 
       inst:{
+        id: '',
         nome_instituicao: '',
         cidade: ''
       },
@@ -93,18 +132,6 @@ export default {
       },
 
       cidades: [],
-
-      headers: [
-        {
-          text: 'ID',
-          align: 'start',
-          sortable: false,
-          value: 'id',
-        },
-        { text: 'Nome', value: 'nome' },
-        { text: 'Cidade', value: 'cidade_id' },
-        { text: 'criado em', value: 'created_at' },
-      ],
 
       instituicoes: [],
     }
@@ -118,6 +145,7 @@ export default {
     },
 
     modal(){
+      this.title = 'Cadastrar';
       this.dialog = !this.dialog;
     },
 
@@ -152,8 +180,10 @@ export default {
     },
 
     cadastro_instituicao(){
+      
+      let url = this.inst.id ? '/api/v1/alterar-instituicao/' + this.inst.id : '/api/v1/nova-instituicao';
       this.carregandoSave = true;
-      axios.post('/api/v1/nova-instituicao', {
+      axios.post(url, {
         nome: this.inst.nome_instituicao,
         cidade_id: this.inst.cidade
       }).
@@ -190,7 +220,51 @@ export default {
 
         this.carregandoSave = !this.carregandoSave;
       })
-    }
+    },
+
+    editar(item){
+      this.title = 'Editar';
+      this.dialog = !this.dialog;
+      this.inst.id = item.id;
+      this.inst.nome_instituicao = item.nome;
+      this.isnt.cidade = item.cidade_id;
+    },
+    
+    excluir(item) {
+      Swal.fire({
+        title: `A instituição será deletada!`,
+        text: `Deseja remover esse registro?`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#007744",
+        cancelButtonColor: "#d33",
+        cancelButtonText: "Cancelar",
+        confirmButtonText: `Sim, pode deletar`,
+        reverseButtons: true,
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          let url = '/api/v1/excluir-instituicao/' + item;
+          let res = await axios.delete(url);
+          console.log(res);
+          if (res.data.status) {
+            Swal.fire({
+              title: "Excluida!",
+              text: res.data.message,
+              icon: "success",
+              confirmButtonColor: "#007744",
+            });
+            this.carregar_instituicoes();
+          } else {
+            Swal.fire({
+              title: "Erro encontrado!",
+              text: res.data.message,
+              icon: "warning",
+              confirmButtonColor: "#d33",
+            });
+          }
+        }
+      });
+    },
   },
 
   mounted(){
