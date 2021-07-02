@@ -16,7 +16,7 @@
           ></v-text-field>
 
           <v-text-field
-            v-model="cidade.uf_cidade"
+            v-model="cidade.uf"
             label="UF:"
             required
           ></v-text-field>
@@ -29,7 +29,7 @@
             color="#046c34"
             outlined
             class="mr-4 mt-6"
-            @click="modal"
+            @click="cadastro_cidade"
           >
             <v-icon dark> mdi-check </v-icon>
             Salvar
@@ -50,7 +50,7 @@
     </v-row>
     <v-data-table
       :headers="headers"
-      :items="desserts"
+      :items="cidades"
       :items-per-page="8"
       class="elevation-1"
     >
@@ -61,6 +61,7 @@
 </template>
 
 <script>
+import axios from "../../../axios/service_public.js";
 
 export default {
   name: 'cidades',
@@ -68,8 +69,8 @@ export default {
   data: ()=>{
 
     return{
+      cidades: [],
       dialog: false,
-
       cidade:{
         nome_cidade: '',
         uf: ''
@@ -83,45 +84,9 @@ export default {
         },
         { text: 'Nome', value: 'nome' },
         { text: 'UF', value: 'uf' },
-        { text: 'criado em', value: 'criado_em' },
+        { text: 'criado em', value: 'created_at' },
       ],
 
-      desserts: [
-        {
-          name: '1',
-          nome: 'Dourados',
-          uf: 'MS',
-          criado_em: '15/03/2021 12:10:00h',
-        },
-
-        {
-          id: '2',
-          nome: 'Caarapó',
-          uf: 'MS',
-          criado_em: '15/03/2021 12:10:00h',
-        },
-
-        {
-          id: '3',
-          nome: 'São Gabriel do Oeste',
-          uf: 'MS',
-          criado_em: '15/03/2021 12:10:00h',
-        },
-
-        {
-          id: '4',
-          nome: 'Vicentina',
-          uf: 'MS',
-          criado_em: '15/03/2021 12:10:00h',
-        },
-
-        {
-          id: '5',
-          nome: 'Naviraí',
-          uf: 'MS',
-          criado_em: '15/03/2021 12:10:00h',
-        },
-      ],
     }
   },
 
@@ -129,7 +94,57 @@ export default {
 
     modal(){
       this.dialog = !this.dialog;
+    },
+
+    carregar_cidades(){
+      axios.get('/api/v1/cidades',{
+
+          headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem('token_uems')
+          }
+        }).then(response => {
+          if(response.data.status){
+
+            this.cidades = response.data.cidades.data;
+          };
+        })
+
+        .catch(function (error) {
+          console.log('[ERRO NA BUSCA DAS CIDADES]: ' + error);
+        });
+    },
+
+    cadastro_cidade(){
+      axios.post("/api/v1/nova-cidade", {
+        headers: {
+          'Authorization': 'Bearer ' + localStorage.getItem('token_uems')
+        },
+        nome: this.cidade.nome_cidade,
+        uf: this.cidade.uf
+      }).
+      
+      then(response =>{
+        if(response.data.status){
+          this.$toast.open({
+            message: response.data.message,
+            type: "sucess",
+          });
+
+          this.carregar_cidades();
+        }
+      })
+
+      .catch(()=>{
+        this.$toast.open({
+          message: "Não foi possivel acessar o sistema, acesso negado!",
+          type: "error",
+        });
+      })
     }
+  },
+
+  mounted(){
+    this.carregar_cidades();
   }
 }
 </script>

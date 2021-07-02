@@ -67,7 +67,7 @@
     </v-row>
     <v-data-table
       :headers="headers"
-      :items="desserts"
+      :items="usuarios"
       :items-per-page="8"
       class="elevation-1"
     >
@@ -78,7 +78,7 @@
 </template>
 
 <script>
-
+import axios from '../../../axios/service_public.js';
 export default {
   name: 'usuarios',
   data: ()=>{
@@ -94,7 +94,7 @@ export default {
         permissao_usuario: ''
       },
 
-      cidades: ['Dourados', 'Douradina', 'Naviraí', 'São Gabriel do Oeste', 'Mariluz', 'Umuarama'],
+      cidades: [],
       permissoes: ['Administrador', 'Avaliador'],
       
       headers: [
@@ -102,95 +102,75 @@ export default {
           text: 'Nome',
           align: 'start',
           sortable: false,
-          value: 'id',
+          value: 'nome',
         },
-        { text: 'CPF', value: 'cpf' },
-        { text: 'Telefone', value: 'telefone' },
-        { text: 'Cidade', value: 'cidade' },
-        { text: 'tipo de acesso', value: 'acesso' },
+        { text: 'Email', value: 'email' },
+        { text: 'Permissão', value: 'grupo_acesso' },
+        { text: 'tipo usuario', value: 'tipo_usuario' },
+        { text: 'Instituição', value: 'instituicao_nome' },
       ],
 
-      desserts: [
-        {
-          id: 'Afonso Barbosa de Souza',
-          cpf: '066.661-741-43',
-          telefone: '(67) 99234-5355',
-          cidade: 'Dourados',
-          acesso: 'Avaliador',
-        },
-
-        {
-          id: 'Marcos lopes gonçalves',
-          cpf: '066.661-741-43',
-          telefone: '(67) 99823-1231',
-          cidade: 'São Gabriel do Oeste',
-          acesso: 'Administrador',
-        },
-
-        {
-          id: 'Jack da Costa Brito',
-          cpf: '066.661-741-43',
-          telefone: '(67) 97121-4342',
-          cidade: 'Vicentina',
-          acesso: 'Avaliador',
-        },
-
-        {
-          id: 'Afonso Barbosa de Souza',
-          cpf: '066.661-741-43',
-          telefone: '(67) 99234-5355',
-          cidade: 'Dourados',
-          acesso: 'Administrador',
-        },
-
-        {
-          id: 'Marcos lopes gonçalves',
-          cpf: '066.661-741-43',
-          telefone: '(67) 99823-1231',
-          cidade: 'São Gabriel do Oeste',
-          acesso: 'Administrador',
-        },
-
-        {
-          id: 'Jack da Costa Brito',
-          cpf: '066.661-741-43',
-          telefone: '(67) 97121-4342',
-          cidade: 'Vicentina',
-          acesso: 'Avaliador',
-        },
-
-        {
-          id: 'Afonso Barbosa de Souza',
-          cpf: '066.661-741-43',
-          telefone: '(67) 99234-5355',
-          cidade: 'Dourados',
-          acesso: 'Avaliador',
-        },
-
-        {
-          id: 'Marcos lopes gonçalves',
-          cpf: '066.661-741-43',
-          telefone: '(67) 99823-1231',
-          cidade: 'São Gabriel do Oeste',
-          acesso: 'Administrador',
-        },
-
-        {
-          id: 'Jack da Costa Brito',
-          cpf: '066.661-741-43',
-          telefone: '(67) 97121-4342',
-          cidade: 'Vicentina',
-          acesso: 'Avaliador',
-        },
-      ],
+      usuarios: [],
     }
   },
 
   methods: {
     modal(){
       this.dialog = !this.dialog
+    },
+
+    carregar_cidades(){
+      axios.get("/api/v1/cidades", {
+        headers:{
+
+          'Authorization': 'Bearer ' + localStorage.getItem('token_uems')
+        }
+      })
+
+      .then(response=>{
+
+        if(response.data.status){
+          for(let i = 0; i < response.data.cidades.data.length; i++){
+
+            this.cidades.push(response.data.cidades.data[i].nome);
+          }
+        }
+      })
+
+      .catch(error=>{
+        console.log('[ERRO AO CARREGAR CATEGORIAS]: ' + error);
+      })
+    },
+
+    carregar_usuarios(){
+
+      axios.get('/api/v1/usuarios', {
+        headers:{
+          'Authorization': 'Bearer ' + localStorage.getItem('token_uems')
+        }
+      }).
+
+      then(response=>{
+
+        if(response.data.status){
+
+          this.usuarios = response.data.usuarios.data;
+        }
+      })
+
+      .catch(error=>{
+        console.log('[ERRO AO CARREGAR USUARIOS]: ' + error);
+      })
     }
+
+
   },
+
+  mounted(){
+
+    this.carregar_cidades();
+    this.carregar_usuarios();
+  }
 }
 </script>
 

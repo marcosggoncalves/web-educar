@@ -49,7 +49,7 @@
     </v-row>
     <v-data-table
       :headers="headers"
-      :items="desserts"
+      :items="instituicoes"
       :items-per-page="8"
       class="elevation-1"
     >
@@ -60,7 +60,7 @@
 </template>
 
 <script>
-
+import axios from '../../../axios/service_public.js';
 export default {
   name: 'instituicoes',
 
@@ -74,7 +74,7 @@ export default {
         cidade: ''
       },
 
-      cidades: ['Dourados', 'Douradina', 'Naviraí', 'São Gabriel do Oeste', 'Mariluz', 'Umuarama'],
+      cidades: [],
 
       headers: [
         {
@@ -84,53 +84,11 @@ export default {
           value: 'id',
         },
         { text: 'Nome', value: 'nome' },
-        { text: 'Cidade', value: 'cidade' },
-        { text: 'criado em', value: 'criado_em' },
+        { text: 'Cidade', value: 'cidade_id' },
+        { text: 'criado em', value: 'created_at' },
       ],
 
-      desserts: [
-        {
-          id: '1',
-          nome: 'Instituto Federal de mato grosso do Sul',
-          cidade: 'Dourados',
-          criado_em: '15/03/2021 12:10:00h',
-        },
-
-        {
-          id: '2',
-          nome: 'Escola Estadual Vilmar Vieira Mattos',
-          cidade: 'Dourados',
-          criado_em: '15/03/2021 12:10:00h',
-        },
-
-        {
-          id: '3',
-          nome: 'Escola Presidente Vargas',
-          cidade: 'Dourados',
-          criado_em: '15/03/2021 12:10:00h',
-        },
-
-        {
-          id: '4',
-          nome: 'Escola Filinto Muller',
-          cidade: 'Dourados',
-          criado_em: '15/03/2021 12:10:00h',
-        },
-
-        {
-          id: '5',
-          nome: 'Escola Apostólica Romana',
-          cidade: 'Dourados',
-          criado_em: '15/03/2021 12:10:00h',
-        },
-
-        {
-          id: '6',
-          nome: 'Escola Teste',
-          cidade: 'Dourados',
-          criado_em: '15/03/2021 12:10:00h',
-        },
-      ],
+      instituicoes: [],
     }
   },
 
@@ -138,7 +96,52 @@ export default {
 
     modal(){
       this.dialog = !this.dialog;
+    },
+
+    carregar_instituicoes(){
+      axios.get('/api/v1/instituicoes', {
+        headers:{
+          'Authorization': 'Bearer ' + localStorage.getItem('token_uems')
+        }
+      }).
+
+      then(response=>{
+
+        if(response.data.status){
+          this.instituicoes = response.data.instituicoes.data;
+        }
+      })
+
+      .catch(error=>{
+
+        console.log('[ERRO AO CARREGAR AS INSTITUIÇÕES]: ' + error);
+      })
+    },
+
+    carregar_cidades(){
+      axios.get('/api/v1/cidades', {
+        headers:{
+          'Authorization': 'Bearer ' + localStorage.getItem('token_uems')
+        }
+      }).
+
+      then(response=>{
+        if(response.data.status){
+          for(let i = 0; i< response.data.cidades.data.length; i++){
+            this.cidades.push(response.data.cidades.data[i].nome);
+          }
+        }
+      })
+
+      .catch(error=>{
+        console.log('[ERRO AO CARREGAR AS CIDADES]: ' + error);
+      })
     }
+  },
+
+  mounted(){
+    this.carregar_instituicoes();
+    this.carregar_cidades();
   }
 }
 </script>
