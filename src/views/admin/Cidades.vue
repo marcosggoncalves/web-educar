@@ -94,7 +94,7 @@ export default {
   methods: {
     clear() {
       this.error = {};
-      this.cidades = {};
+      this.cidade = {};
     },
     modal() {
       this.clear();

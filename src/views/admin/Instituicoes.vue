@@ -13,12 +13,23 @@
             v-model="inst.nome_instituicao"
             label="Nome da instituição:"
             required
+            :error-messages="error.nome"
           ></v-text-field>
 
-           <v-select
-            :items="cidades"
-            label="Cidade"
-          ></v-select>
+           <v-autocomplete
+                :items="cidades"
+                label="Cidade"
+                v-model="inst.cidade"
+                item-value="id"
+                item-text="nome"
+                auto-select-first
+                chips
+                clearable
+                dense
+                deletable-chips
+                required
+                :error-messages="error.nome"
+              ></v-autocomplete>
 
           <v-btn color="error" class="mr-4 mt-6" @click="modal">
             <v-icon dark> mdi-close </v-icon>
@@ -28,7 +39,8 @@
             color="#046c34"
             outlined
             class="mr-4 mt-6"
-            @click="modal"
+            @click="cadastro_instituicao"
+            :loading="carregandoSave"
           >
             <v-icon dark> mdi-check </v-icon>
             Salvar
@@ -60,7 +72,7 @@
 </template>
 
 <script>
-import axios from '../../../axios/service_public.js';
+import axios from '../../../axios/service.js';
 export default {
   name: 'instituicoes',
 
@@ -68,8 +80,14 @@ export default {
 
     return{
       dialog: false,
+      carregandoSave: false,
 
       inst:{
+        nome_instituicao: '',
+        cidade: ''
+      },
+
+      error: {
         nome_instituicao: '',
         cidade: ''
       },
@@ -94,21 +112,22 @@ export default {
 
   methods:{
 
+    clear(){
+      this.inst = {};
+      this.error= {};
+    },
+
     modal(){
       this.dialog = !this.dialog;
     },
 
     carregar_instituicoes(){
-      axios.get('/api/v1/instituicoes', {
-        headers:{
-          'Authorization': 'Bearer ' + localStorage.getItem('token_uems')
-        }
-      }).
+      axios.get('/api/v1/instituicoes-all').
 
       then(response=>{
 
         if(response.data.status){
-          this.instituicoes = response.data.instituicoes.data;
+          this.instituicoes = response.data.instituicoes;
         }
       })
 
@@ -119,22 +138,57 @@ export default {
     },
 
     carregar_cidades(){
-      axios.get('/api/v1/cidades', {
-        headers:{
-          'Authorization': 'Bearer ' + localStorage.getItem('token_uems')
-        }
-      }).
+      axios.get('/api/v1/cidades-all').
 
       then(response=>{
         if(response.data.status){
-          for(let i = 0; i< response.data.cidades.data.length; i++){
-            this.cidades.push(response.data.cidades.data[i].nome);
-          }
+          this.cidades = response.data.cidades;
         }
       })
 
       .catch(error=>{
         console.log('[ERRO AO CARREGAR AS CIDADES]: ' + error);
+      })
+    },
+
+    cadastro_instituicao(){
+      this.carregandoSave = true;
+      axios.post('/api/v1/nova-instituicao', {
+        nome: this.inst.nome_instituicao,
+        cidade_id: this.inst.cidade
+      }).
+
+      then(response=>{
+        if(response.data.status){
+          this.$toast.open({
+            message: response.data.message,
+            type: "success",
+          });
+
+          this.dialog = !this.dialog;
+          this.carregandoSave = false;
+          this.carregar_instituicoes();
+          
+          this.clear();
+        }
+      })
+
+      .catch(res=>{
+        if (res.response.data && res.response.data.validation) {
+          this.error = res.response.data.validation;
+
+          this.$toast.open({
+            message: res.response.data.message,
+            type: "error",
+          });
+        } else {
+          this.$toast.open({
+            message: res.response.data.message,
+            type: "error",
+          });
+        }
+
+        this.carregandoSave = !this.carregandoSave;
       })
     }
   },

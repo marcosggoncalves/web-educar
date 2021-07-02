@@ -10,32 +10,56 @@
 
         <v-form ref="form" class="pa-8 mx-auto">
           <v-text-field
-            v-model="usuario.nome_usuario"
+            v-model="usuario.nome"
             label="Nome:"
             required
+            :error-messages="error.nome"
           ></v-text-field>
 
           <v-text-field
-            v-model="usuario.cpf"
-            label="CPF:"
+            v-model="usuario.email"
+            label="Email:"
             required
+            :error-messages="error.email"
           ></v-text-field>
+
+          <v-autocomplete
+            :items="grupos"
+            label="Grupo de Permissões"
+            v-model="usuario.grupo_id"
+            item-value="id"
+            item-text="nome"
+            auto-select-first
+            chips
+            clearable
+            dense
+            deletable-chips
+            :error-messages="error.grupo_id"
+          ></v-autocomplete>
+
+          <v-autocomplete
+            :items="instituicoes"
+            label="Instituição"
+            v-model="usuario.instituicao_id"
+            item-value="id"
+            item-text="nome"
+            auto-select-first
+            chips
+            clearable
+            dense
+            deletable-chips
+            :error-messages="error.instituicao_id"
+          ></v-autocomplete>
 
           <v-text-field
-            v-model="usuario.telefone"
-            label="Telefone:"
+            v-model="usuario.senha"
+            :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
+            :type="show ? 'text' : 'password'"
+            @click:append="show = !show"
+            label="Senha:"
             required
+            :error-messages="error.senha"
           ></v-text-field>
-
-          <v-select
-            :items="cidades"
-            label="Cidade"
-          ></v-select>
-
-          <v-select
-            :items="permissoes"
-            label="Permissão"
-          ></v-select>
 
           <v-btn color="error" class="mr-4 mt-6" @click="modal">
             <v-icon dark> mdi-close </v-icon>
@@ -45,7 +69,8 @@
             color="#046c34"
             outlined
             class="mr-4 mt-6"
-            @click="modal"
+            :loading="carregandoSave"
+            @click="cadastrar_usuario_organizacao"
           >
             <v-icon dark> mdi-check </v-icon>
             Salvar
@@ -78,24 +103,36 @@
 </template>
 
 <script>
-import axios from '../../../axios/service_public.js';
+import axios from '../../../axios/service.js';
 export default {
   name: 'usuarios',
   data: ()=>{
     
     return{
       dialog: false,
+      show: false,
+      carregandoSave: false,
 
       usuario:{
-        nome_usuario: '',
-        cpf_usuario: '',
-        telefone_usuario: '',
-        cidade_usuario: '',
-        permissao_usuario: ''
+        nome: '',
+        email: '',
+        grupo_id: '',
+        instituicao_id: '',
+        senha: '',
+      },
+
+      error:{
+        nome: '',
+        email: '',
+        grupo_id: '',
+        instituicao_id: '',
+        senha: '',
       },
 
       cidades: [],
-      permissoes: ['Administrador', 'Avaliador'],
+      grupos: [],
+      instituicoes: [],
+      usuarios: [],
       
       headers: [
         {
@@ -110,45 +147,38 @@ export default {
         { text: 'Instituição', value: 'instituicao_nome' },
       ],
 
-      usuarios: [],
     }
   },
 
   methods: {
+
+    clear(){
+      this.error = {};
+      this.usuario = {};
+
+    },
     modal(){
-      this.dialog = !this.dialog
+      this.dialog = !this.dialog;
     },
 
     carregar_cidades(){
-      axios.get("/api/v1/cidades", {
-        headers:{
-
-          'Authorization': 'Bearer ' + localStorage.getItem('token_uems')
-        }
-      })
+      axios.get("/api/v1/cidades-all")
 
       .then(response=>{
 
         if(response.data.status){
-          for(let i = 0; i < response.data.cidades.data.length; i++){
-
-            this.cidades.push(response.data.cidades.data[i].nome);
-          }
+          this.cidades = response.data.cidades;
         }
       })
 
       .catch(error=>{
-        console.log('[ERRO AO CARREGAR CATEGORIAS]: ' + error);
+        console.log('[ERRO AO CARREGAR CIDADES]: ' + error);
       })
     },
 
     carregar_usuarios(){
 
-      axios.get('/api/v1/usuarios', {
-        headers:{
-          'Authorization': 'Bearer ' + localStorage.getItem('token_uems')
-        }
-      }).
+      axios.get('/api/v1/usuarios').
 
       then(response=>{
 
@@ -161,8 +191,80 @@ export default {
       .catch(error=>{
         console.log('[ERRO AO CARREGAR USUARIOS]: ' + error);
       })
-    }
+    },
 
+    carregar_instituicoes(){
+      axios.get('/api/v1/instituicoes-all')
+
+      .then(response=>{
+
+        if(response.data.status){
+          this.instituicoes = response.data.instituicoes;
+        }
+      })
+
+      .catch(error=>{
+        console.log('[ERRO AO CARREGAR INSTITUICOES]: ' + error);
+      })
+    },
+
+    carregar_grupos_permissoes(){
+      axios.get('/api/v1/grupos')
+
+      .then(response=>{
+        if(response.data.status){
+          this.grupos = response.data.grupos.data;
+        }
+      })
+
+      .catch(error=>{
+        
+        console.log('[ERRO AO CARREGAR GRUPOS DE PERMISSAO]: ' + error);
+      })
+    },
+
+    cadastrar_usuario_organizacao(){
+      this.carregandoSave = true;
+      axios.post('/api/v1/novo-usuario', {
+        nome: this.usuario.nome,
+        senha: this.usuario.senha,
+        email: this.usuario.email,
+        grupo_id: this.usuario.grupo_id,
+        tipo_usuario: 'Organização',
+        instituicao_id: this.usuario.instituicao_id
+      })
+
+      .then(response=>{
+        if(response.data.status){
+          this.$toast.open({
+            message: response.data.message,
+            type: "success",
+          });
+        }
+
+        this.carregandoSave = false;
+        this.dialog = !this.dialog;
+        this.carregar_usuarios();
+        this.clear();
+      })
+
+      .catch(res=>{
+        if (res.response.data && res.response.data.validation) {
+          this.error = res.response.data.validation;
+
+          this.$toast.open({
+            message: res.response.data.message,
+            type: "error",
+          });
+        } else {
+          this.$toast.open({
+            message: res.response.data.message,
+            type: "error",
+          });
+        }
+        this.carregandoSave = false;
+      });
+    }
 
   },
 
@@ -170,6 +272,8 @@ export default {
 
     this.carregar_cidades();
     this.carregar_usuarios();
+    this.carregar_instituicoes();
+    this.carregar_grupos_permissoes();
   }
 }
 </script>
