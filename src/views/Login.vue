@@ -32,10 +32,10 @@
       ></v-text-field>
 
       <v-btn
-        color="#00a65a"
+        color="#07759e"
         block
         type="submit"
-        class="mr-4 mt-4 mb-8 white--text"
+        class="mr-4 mt-4 mb-10 white--text"
         :loading="carregando"
         @click="logar"
         :disabled="!email || !senha || carregando"

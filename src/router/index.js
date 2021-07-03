@@ -7,6 +7,8 @@ import Permissoes from '../views/admin/Permissoes.vue';
 import Cidades from '../views/admin/Cidades.vue';
 import Trabalhos from '../views/admin/Trabalhos.vue';
 import Login from '../views/Login.vue';
+import SubmeterProjeto from '../views/admin/SubmeterProjeto.vue';
+
 
 Vue.use(VueRouter)
 
@@ -35,6 +37,16 @@ const routes = [
     path: '/usuarios',
     name: 'usuarios',
     component: Usuarios,
+    meta: {
+      allowAnonymous: false
+    },
+    beforeEnter: auth
+  },
+
+  {
+    path: '/submeter-projeto',
+    name: 'submeter-projeto',
+    component: SubmeterProjeto,
     meta: {
       allowAnonymous: false
     },

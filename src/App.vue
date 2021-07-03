@@ -54,7 +54,7 @@
         <v-menu bottom width="100" rounded offset-y class="pr-8">
           <template v-slot:activator="{ on }">
             <v-btn icon x-large v-on="on">
-              <v-avatar color="#00a65a" class="white--text" size="40">
+              <v-avatar color="#07759e" class="white--text" size="40">
                 {{ namePerfil() }}
               </v-avatar>
             </v-btn>
@@ -62,7 +62,7 @@
           <v-card>
             <v-list-item-content class="justify-center">
               <div class="mx-auto text-center">
-                <v-avatar color="#00a65a" class="mb-2">
+                <v-avatar color="#07759e" class="mb-2">
                   <span class="white--text headline">{{ namePerfil() }}</span>
                 </v-avatar>
                 <p class="caption mt-1">
