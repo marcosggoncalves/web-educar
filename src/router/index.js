@@ -8,6 +8,7 @@ import Cidades from '../views/admin/Cidades.vue';
 import Trabalhos from '../views/admin/Trabalhos.vue';
 import Login from '../views/Login.vue';
 import SubmeterProjeto from '../views/admin/SubmeterProjeto.vue';
+import CadastroAluno from '../views/admin/CadastroAluno.vue';
 
 
 Vue.use(VueRouter)
@@ -41,6 +42,15 @@ const routes = [
       allowAnonymous: false
     },
     beforeEnter: auth
+  },
+
+  {
+    path: '/cadastro-aluno',
+    name: 'cadastro-aluno',
+    component: CadastroAluno,
+    meta: {
+      allowAnonymous: true
+    },
   },
 
   {

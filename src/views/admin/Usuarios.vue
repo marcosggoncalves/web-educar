@@ -262,8 +262,8 @@ export default {
         nome: this.usuario.nome,
         senha: this.usuario.senha,
         email: this.usuario.email,
-        grupo_id: localStorage.getItem('token_uems') ? this.usuario.grupo_id : 1,
-        tipo_usuario: localStorage.getItem('token_uems') ? 'Organização' : 'Alunos',
+        grupo_id: this.usuario.grupo_id,
+        tipo_usuario: this.usuario.grupo_id == 1 ? 'Organização' : 'Alunos',
         instituicao_id: this.usuario.instituicao_id
       })
 

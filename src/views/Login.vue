@@ -31,11 +31,12 @@
         required
       ></v-text-field>
 
+
       <v-btn
         color="#07759e"
         block
         type="submit"
-        class="mr-4 mt-4 mb-10 white--text"
+        class="mr-4 mt-4 mb-4 white--text"
         :loading="carregando"
         @click="logar"
         :disabled="!email || !senha || carregando"
@@ -43,6 +44,7 @@
         Entrar
       </v-btn>
     </v-form>
+    <a href="/cadastro-aluno" class="link mb-5">não possui cadastro? <b>Clique Aqui!</b></a>
   </v-card>
 </template>
 
@@ -128,5 +130,18 @@ export default {
 
 .color {
   color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.link{
+  display: block;
+  width: 100%;
+  color: rgba(0,0,0,0.9);
+  text-decoration: none;
+  outline: unset;
+  text-align: center;
+}
+
+.link b{
+  color: rgb(37, 108, 163);
 }
 </style>
