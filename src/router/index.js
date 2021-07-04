@@ -8,8 +8,8 @@ import Cidades from '../views/admin/Cidades.vue';
 import Trabalhos from '../views/admin/Trabalhos.vue';
 import Login from '../views/Login.vue';
 import SubmeterProjeto from '../views/admin/SubmeterProjeto.vue';
+import Avaliador from '../views/admin/Avaliador.vue';
 import CadastroAluno from '../views/admin/CadastroAluno.vue';
-
 
 Vue.use(VueRouter)
 
@@ -97,6 +97,15 @@ const routes = [
     path: '/trabalhos-recebidos',
     name: 'trabalhos',
     component: Trabalhos,
+    meta: {
+      allowAnonymous: false
+    },
+    beforeEnter: auth
+  },
+  {
+    path: '/avaliacoes',
+    name: 'avaliações',
+    component: Avaliador,
     meta: {
       allowAnonymous: false
     },
