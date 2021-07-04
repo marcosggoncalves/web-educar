@@ -5,7 +5,7 @@
         <v-img
           alt="UEMS - Controle de projetos"
           class="shrink ml-8"
-          contain 
+          contain
           :src="require('../../../public/img/logo.png')"
           transition="scale-transition"
           width="250"
@@ -14,7 +14,6 @@
     </v-list-item>
     <h3 class="text-center">Cadastre-se para submeter o projeto!</h3>
     <v-form ref="form" class="pa-4 mx-auto form">
-      
       <v-text-field
         v-model="usuario.nome"
         label="Nome:"
@@ -53,104 +52,102 @@
         :error-messages="error.senha"
       ></v-text-field>
 
-      <v-btn color="error" class="mr-4 mt-6" @click="goHome">
-        <v-icon dark> mdi-close </v-icon>
-      </v-btn>
+      <div class="mb-4">
+        <v-btn
+          color="#07759e"
+          class="mr-4 mt-6 white--text"
+          :loading="carregandoSave"
+          @click="cadastrar_usuario_organizacao"
+        >
+          <v-icon dark> mdi-check </v-icon>
+          Salvar
+        </v-btn>
 
-      <v-btn
-        color="#046c34"
-        outlined
-        class="mr-4 mt-6"
-        :loading="carregandoSave"
-        @click="cadastrar_usuario_organizacao"
-      >
-        <v-icon dark> mdi-check </v-icon>
-        Salvar
-      </v-btn>
+        <v-btn color="error" class="mr-4 mt-6" @click="goHome">
+          <v-icon dark> mdi-close </v-icon>
+        </v-btn>
+      </div>
     </v-form>
-
   </v-card>
 </template>
 
 <script>
-  import axios from '../../../axios/service_public.js';
-  export default {
-    name: 'cadastro-aluno',
-    data: ()=>{
-      
-      return{
-        title: 'Cadastrar',
-        dialog: false,
-        show: false,
-        carregandoSave: false,
+import axios from "../../../axios/service_public.js";
+export default {
+  name: "cadastro-aluno",
+  data: () => {
+    return {
+      title: "Cadastrar",
+      dialog: false,
+      show: false,
+      carregandoSave: false,
 
-        usuario:{
-          id: '',
-          nome: '',
-          email: '',
-          instituicao_id: '',
-          senha: '',
-        },
+      usuario: {
+        id: "",
+        nome: "",
+        email: "",
+        instituicao_id: "",
+        senha: "",
+      },
 
-        error:{
-          nome: '',
-          email: '',
-          instituicao_id: '',
-          senha: '',
-        },
-        
-        instituicoes: [],
-      }
+      error: {
+        nome: "",
+        email: "",
+        instituicao_id: "",
+        senha: "",
+      },
+
+      instituicoes: [],
+    };
+  },
+
+  methods: {
+    clear() {
+      this.error = {};
+      this.usuario = {};
     },
 
-    methods: {
+    goHome() {
+      let redirect = setInterval(() => {
+        this.$router.push({ path: "/" });
+        this.$router.go();
+        this.clear();
+        this.carregandoSave = false;
+        clearInterval(redirect);
+      }, 1000);
+    },
 
-      clear(){
-        this.error = {};
-        this.usuario = {};
+    carregar_instituicoes() {
+      axios
+        .get("/api/v1/instituicoes-all")
 
-      },
-
-      goHome(){
-        let redirect = setInterval(() => {
-          this.$router.push({ path: "/" });
-          this.$router.go();
-          this.clear();
-          this.carregandoSave = false;
-          clearInterval(redirect);
-        }, 1000);
-      },
-
-      carregar_instituicoes(){
-        axios.get('/api/v1/instituicoes-all')
-
-        .then(response=>{
-
-          if(response.data.status){
+        .then((response) => {
+          if (response.data.status) {
             this.instituicoes = response.data.instituicoes;
           }
         })
 
-        .catch(error=>{
-          console.log('[ERRO AO CARREGAR INSTITUICOES]: ' + error);
-        })
-      },
+        .catch((error) => {
+          console.log("[ERRO AO CARREGAR INSTITUICOES]: " + error);
+        });
+    },
 
-      cadastrar_usuario_organizacao(){
-        this.carregandoSave = true;
-        
-        let url = '/api/v1/novo-usuario';
-        axios.post(url, {
+    cadastrar_usuario_organizacao() {
+      this.carregandoSave = true;
+
+      let url = "/api/v1/novo-usuario";
+      axios
+        .post(url, {
           nome: this.usuario.nome,
           senha: this.usuario.senha,
           email: this.usuario.email,
           grupo_id: 1,
-          tipo_usuario: 'Alunos',
-          instituicao_id: this.usuario.instituicao_id
+          tipo_usuario: "Alunos",
+          instituicao_id: this.usuario.instituicao_id,
         })
 
-        .then(response=>{
-          if(response.data.status){
+        .then((response) => {
+          if (response.data.status) {
             this.$toast.open({
               message: response.data.message,
               type: "success",
@@ -166,7 +163,7 @@
           }, 1000);
         })
 
-        .catch(res=>{
+        .catch((res) => {
           if (res.response.data && res.response.data.validation) {
             this.error = res.response.data.validation;
 
@@ -182,20 +179,18 @@
           }
           this.carregandoSave = false;
         });
-      },
-
-
     },
+  },
 
-    mounted(){
-      this.carregar_instituicoes();
-    }
-  }
+  mounted() {
+    this.carregar_instituicoes();
+  },
+};
 </script>
 
 <style>
-  .form{
-    max-width: 400px;
-    min-width: 400px;
-  }
+.form {
+  max-width: 400px;
+  min-width: 400px;
+}
 </style>

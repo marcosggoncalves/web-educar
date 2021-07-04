@@ -44,7 +44,7 @@
         Entrar
       </v-btn>
     </v-form>
-    <a href="/cadastro-aluno" class="link mb-5">não possui cadastro? <b>Clique Aqui!</b></a>
+    <a href="/cadastre-se" class="link mb-5">Não possui cadastro? <b>Clique Aqui!</b></a>
   </v-card>
 </template>
 

@@ -1,1 +1,1 @@
-export default  global =  'http://127.0.0.1:3333/';
+export default  global =  'http://192.168.100.25:3333/';

@@ -45,7 +45,7 @@ const routes = [
   },
 
   {
-    path: '/cadastro-aluno',
+    path: '/cadastre-se',
     name: 'cadastro-aluno',
     component: CadastroAluno,
     meta: {
