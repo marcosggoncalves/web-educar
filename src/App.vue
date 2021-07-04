@@ -158,6 +158,7 @@ export default {
     },
   },
   mounted() {
+    this.$store.dispatch("verifyToken");
     this.menu = JSON.parse(localStorage.getItem("menuLateral"));
     this.user = JSON.parse(localStorage.getItem("user"));
   },
