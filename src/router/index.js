@@ -27,6 +27,14 @@ const auth = async (to, from, next) => {
 
 const routes = [
   {
+    path: '*',
+    name: 'entrar',
+    component: Login,
+    meta: {
+      allowAnonymous: true
+    }
+  },
+  {
     path: '/usuarios',
     name: 'usuarios',
     component: Usuarios,

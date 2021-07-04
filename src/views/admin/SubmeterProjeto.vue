@@ -220,7 +220,7 @@
               <v-col cols="12" md="12">
                 <v-btn
                   tile
-                  class="button-cadastro"
+                  class="button-cadastro white--text"
                   color="#07759e"
                   :disabled="!projeto.titulo && projeto.autores.length > 0"
                   :loading="carregandoSave"

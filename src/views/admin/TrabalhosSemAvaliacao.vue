@@ -70,7 +70,7 @@
             <v-col cols="12" md="12">
               <v-btn
                 tile
-                class="button-cadastro"
+                class="button-cadastro white--text"
                 color="#07759e"
                 @click="() => encaminharParaAvaliacao()"
                 :loading="carregamento"
@@ -86,7 +86,7 @@
 
     <v-card class="ma-1">
       <v-card-title class="titulo">
-        Trabalhos submetidos sem encaminhamento.
+        ({{trabalhos.length}}) - Trabalhos submetidos sem encaminhamento.
       </v-card-title>
     </v-card>
 

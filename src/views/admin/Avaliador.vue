@@ -66,7 +66,7 @@
                   </v-col>
                   <v-col cols="12" md="12">
                     <v-btn
-                      class="mt-4 button-cadastro"
+                      class="mt-4 button-cadastro white--text"
                       tile
                       color="#07759e"
                       :loading="carregandoSave"
@@ -90,7 +90,7 @@
     </v-dialog>
 
     <v-card class="ma-1">
-      <v-card-title class="titulo"> Trabalhos para avalições </v-card-title>
+      <v-card-title class="titulo"> ({{avaliacoes.length}}) - Trabalhos para avalições </v-card-title>
     </v-card>
 
     <center v-if="carregamento" class="mt-5">
