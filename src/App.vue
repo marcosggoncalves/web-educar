@@ -18,7 +18,9 @@
               @click="redirecionar(`${item.rota_web}`)"
             >
               <v-list-item-icon>
-                <v-icon>{{item.icon !=null ? item.icon : 'mdi-plus'}}</v-icon>
+                <v-icon>{{
+                  item.icon != null ? item.icon : "mdi-plus"
+                }}</v-icon>
               </v-list-item-icon>
 
               <v-list-item-title>
@@ -142,10 +144,10 @@ export default {
             icon: "sucess",
             showCancelButton: false,
             reverseButtons: true,
-            showConfirmButton: false
-          })
+            showConfirmButton: false,
+          });
           let redirect = setInterval(() => {
-            this.$router.push({ path: "/" });
+            this.$router.push({ path: "/entrar" });
             this.$router.go();
             this.clear();
             this.carregandoSave = false;
@@ -158,9 +160,10 @@ export default {
     },
   },
   mounted() {
-    this.$store.dispatch("verifyToken");
     this.menu = JSON.parse(localStorage.getItem("menuLateral"));
     this.user = JSON.parse(localStorage.getItem("user"));
+
+    if (this.user && this.user.id) this.$store.dispatch("verifyToken");
   },
 };
 </script>
