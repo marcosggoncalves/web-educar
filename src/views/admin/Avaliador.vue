@@ -304,6 +304,7 @@ export default {
   },
   mounted() {
     this.loadTrabalhos();
+    this.$store.dispatch("verifyToken");
   },
 };
 </script>

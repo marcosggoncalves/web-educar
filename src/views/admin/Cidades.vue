@@ -1,178 +1,232 @@
+
 <template>
-  <div class="cadastro-cidade">
+  <div>
+    <div>
+      <v-dialog v-model="dialog" max-width="600px">
+        <v-card>
+          <v-card-title><b>Nova cidade</b> </v-card-title>
+          <v-divider></v-divider>
+          <v-form ref="form" class="pa-8 mx-auto">
+            <v-row>
+              <v-col cols="12" md="12">
+                <v-text-field
+                  v-model="cidade.nome"
+                  label="Nome:"
+                  required
+                  :error-messages="error.nome"
+                ></v-text-field>
+              </v-col>
 
-    <!-- modal cadastro -->
-    <v-dialog v-model="dialog" max-width="600px">
-      <v-card>
+               <v-col cols="12" md="12">
+                <v-text-field
+                  v-model="cidade.uf"
+                  label="UF:"
+                  required
+                  :error-messages="error.uf"
+                ></v-text-field>
+              </v-col>
+            </v-row>
+
+            <v-btn color="error" class="mr-4 mt-6" @click="clear">
+              <v-icon dark> mdi-close </v-icon>
+            </v-btn>
+
+            <v-btn
+              color="#07759e"
+              outlined
+              class="mr-4 mt-6"
+              @click="salvar"
+              :disabled="carregamentoSave"
+              :loading="carregamentoSave"
+            >
+              <v-icon dark> mdi-check </v-icon>
+              Salvar
+            </v-btn>
+          </v-form>
+        </v-card>
+      </v-dialog>
+
+      <center v-if="carregamento" class="mt-10">
+        <v-progress-circular
+          :size="40"
+          class="ma-10"
+          color="#07759e"
+          indeterminate
+        ></v-progress-circular>
+      </center>
+
+      <found v-else-if="cidades.length === 0" />
+
+      <v-card v-else>
         <v-card-title>
-          <b>{{title}} cidade</b>
+          <b>Cidades</b>
+          <v-spacer></v-spacer>
+          <v-btn color="#07759e" class="white--text" @click="clear">
+            <v-icon dark> mdi-plus </v-icon>
+            Nova cidade
+          </v-btn>
         </v-card-title>
-        <v-divider></v-divider>
 
-        <v-form ref="form" class="pa-8 mx-auto">
-          <v-text-field
-            v-model="cidade.nome"
-            label="Nome:"
-            required
-            :error-messages="error.nome"
-          ></v-text-field>
+        <v-simple-table>
+          <template v-slot:default>
+            <thead>
+              <tr>
+                <th class="text-left">ID</th>
+                <th class="text-left">Nome</th>
+                <th class="text-left">UF</th>
+                <th class="text-left">Criado em</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(item, index) in cidades" :key="index">
+                <td class="text-left">{{ item.id }}</td>
+                <td class="text-left">{{ item.nome }}</td>
+                <td class="text-left">{{ item.uf }}</td>
+                <td class="text-left">{{ dateFormat(item.created_at) }}</td>
+                <td class="text-left">
+                  <v-menu bottom left>
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-btn dark icon v-bind="attrs" v-on="on" color="black">
+                        <v-icon>mdi-dots-vertical</v-icon>
+                      </v-btn>
+                    </template>
 
-          <v-text-field
-            v-model="cidade.uf"
-            label="UF:"
-            required
-            :error-messages="error.uf"
-          ></v-text-field>
-
-          <v-btn color="error" class="mr-4 mt-6" @click="modal">
-            <v-icon dark> mdi-close </v-icon>
-          </v-btn>
-
-          <v-btn
-            color="#046c34"
-            outlined
-            class="mr-4 mt-6"
-            @click="cadastro_cidade"
-            :loading="carregandoSave"
-          >
-            <v-icon dark> mdi-check </v-icon>
-            Salvar
-          </v-btn>
-        </v-form>
+                    <v-list>
+                      <v-list-item @click="editar(item)">
+                        <v-list-item-title
+                          >Alterar informações</v-list-item-title
+                        >
+                      </v-list-item>
+                      <v-list-item @click="excluir(item.id)">
+                        <v-list-item-title>Excluir</v-list-item-title>
+                      </v-list-item>
+                    </v-list>
+                  </v-menu>
+                </td>
+              </tr>
+            </tbody>
+          </template>
+        </v-simple-table>
       </v-card>
-    </v-dialog>
-
-    <!-- list select -->
-    <v-simple-table class="elevation-3 mt-2x dense">
-      <template v-slot:top>
-        <v-row align="center" justify="space-between" class="linha-top">
-          <h2>Cidades Cadastradas</h2>
-
-          <v-btn tile class="button-cadastro" color="#07759e" @click="modal">
-            <v-icon left> mdi-pencil </v-icon>
-
-            Cadastrar cidade
-          </v-btn>
-        </v-row>
-      </template>
-      <template v-slot:default>
-        <thead>
-          <tr>
-            <th class="text-left">ID</th>
-            <th class="text-left">Cidade</th>
-            <th class="text-left">UF</th>
-            <th class="text-left">Criado em</th>
-            <th class="text-left">Ações</th>
-          </tr>
-        </thead>
-        <tbody v-if="cidades.length > 0">
-          <tr v-for="item in cidades" :key="item.id">
-            <td class="text-left">{{ item.id }}</td>
-            <td class="text-left">{{ item.nome }}</td>
-            <td class="text-left">{{ item.uf }}</td>
-            <td class="text-left">{{ item.created_at}}</td>
-            <td class="text-left">
-              <v-menu bottom left>
-                <template v-slot:activator="{ on, attrs }">
-                  <v-btn dark icon v-bind="attrs" v-on="on" color="black">
-                    <v-icon>mdi-dots-vertical</v-icon>
-                  </v-btn>
-                </template>
-
-                <v-list>
-                  <v-list-item @click="excluir(item.id)">
-                    <v-list-item-title>Excluir</v-list-item-title>
-                  </v-list-item>
-                  <v-list-item @click="editar(item)">
-                    <v-list-item-title>Alterar</v-list-item-title>
-                  </v-list-item>
-                </v-list>
-              </v-menu>
-            </td>
-          </tr>
-        </tbody>
-      </template>
-    </v-simple-table>
+    </div>
+    <div class="text-left mt-5">
+      <v-pagination
+        v-model="pagination.page"
+        :length="pagination.lastPage"
+        :total-visible="pagination.perPage"
+        color="#07759e"
+        v-if="cidades.length > 0"
+        @input="(page) => loadCidades(page)"
+        @next="() => loadCidades(pagination.page)"
+        @previous="() => loadCidades(pagination.page)"
+      ></v-pagination>
+    </div>
   </div>
 </template>
-
 <script>
 import axios from "../../../axios/service.js";
 import Swal from "sweetalert2";
 
-export default {
-  name: "cidades",
+var moment = require("moment");
+moment.locale("pt-br");
 
-  data: () => {
+export default {
+  data() {
     return {
-      cidades: [],
       dialog: false,
-      carregandoSave: false,
-      title: 'Cadastrar',
+      carregamento: false,
+      carregamentoSave: false,
+      cidades: [],
       cidade: {
-        id: '',
-        nome: "",
-        uf: "",
+        nome: null,
+        uf: null,
       },
       error: {
-        nome: "",
-        uf: "",
+        nome: null,
+        uf: null,
+      },
+      pagination: {
+        page: 1,
+        perPage: 1,
+        lastPage: 1,
       },
     };
   },
-
   methods: {
-    clear() {
-      this.error = {};
-      this.cidade = {};
-    
-    },
+    excluir(id) {
+      Swal.fire({
+        title: `Cidade será excluido`,
+        text: `Deseja excluir registro?`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#07759e",
+        cancelButtonColor: "#d33",
+        cancelButtonText: "Cancelar",
+        confirmButtonText: `Sim, pode continuar`,
+        reverseButtons: true,
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          let res = await axios.delete(`/api/v1/excluir-cidade/${id}`);
 
-    modal() {
-      this.title = 'Cadastrar'
-      this.clear();
+          if (res.data.status) {
+            Swal.fire({
+              title: "Exclusão realizada!",
+              text: res.data.message,
+              icon: "success",
+              confirmButtonColor: "#07759e",
+            });
+            this.setup();
+          } else {
+            Swal.fire({
+              title: "Erro encontrado!",
+              text: res.data.message,
+              icon: "warning",
+              confirmButtonColor: "#d33",
+            });
+          }
+        }
+      });
+    },
+    editar(item) {
+      this.dialog = !this.dialog;
+      this.cidade = item;
+    },
+    clear() {
+      this.cidade = {};
+      this.error = {};
       this.dialog = !this.dialog;
     },
+    salvar() {
+      this.carregandoSave = true;
 
-    carregar_cidades() {
+      let url = this.cidade.id
+        ? `/api/v1/alterar-cidade/${this.cidade.id}`
+        : "/api/v1/nova-cidade";
+
       axios
-        .get("/api/v1/cidades")
-        .then((response) => {
-          if (response.data.status) {
-            this.cidades = response.data.cidades.data;
-          }
-        })
-
-        .catch(function (error) {
-          console.log("[ERRO NA BUSCA DAS CIDADES]: " + error);
-        });
-    },
-
-    cadastro_cidade() {
-
-      let url = this.cidade.id ? '/api/v1/alterar-cidade/' + this.cidade.id : '/api/v1/nova-cidade';
-      axios
-        .post(url, {
-          nome: this.cidade.nome,
-          uf: this.cidade.uf,
-        })
-        .then((response) => {
-          if (response.data.status) {
+        .post(url, this.cidade)
+        .then((res) => {
+          if (res.data.status) {
             this.$toast.open({
-              message: response.data.message,
+              message: res.data.message,
               type: "success",
             });
 
-            this.carregandoSave = false;
-            this.dialog = !this.dialog;
-            this.carregar_cidades();
             this.clear();
+            this.setup();
+
+            this.carregandoSave = false;
+          } else {
+            this.$toast.open({
+              message: res.data.message,
+              type: "error",
+            });
+            this.carregandoSave = false;
           }
         })
         .catch((res) => {
           if (res.response.data && res.response.data.validation) {
             this.error = res.response.data.validation;
-
             this.$toast.open({
               message: res.response.data.message,
               type: "error",
@@ -186,71 +240,38 @@ export default {
           this.carregandoSave = false;
         });
     },
-
-    editar(item){
-      this.title = 'Editar';
-      this.dialog = !this.dialog;
-      this.cidade.id = item.id;
-      this.cidade.nome = item.nome;
-      this.cidade.uf = item.uf;
+    dateFormat(param) {
+      return moment(param).format("DD/MM/YYYY HH:mm");
     },
-    
-    excluir(item) {
-      Swal.fire({
-        title: `Cidade será deletada!`,
-        text: `Deseja remover esse registro?`,
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#007744",
-        cancelButtonColor: "#d33",
-        cancelButtonText: "Cancelar",
-        confirmButtonText: `Sim, pode deletar`,
-        reverseButtons: true,
-      }).then(async (result) => {
-        if (result.isConfirmed) {
-          let url = '/api/v1/excluir-cidade/' + item;
-          let res = await axios.delete(url);
-          console.log(res);
-          if (res.data.status) {
-            Swal.fire({
-              title: "Excluido!",
-              text: res.data.message,
-              icon: "success",
-              confirmButtonColor: "#007744",
-            });
-            this.carregar_cidades();
-          } else {
-            Swal.fire({
-              title: "Erro encontrado!",
-              text: res.data.message,
-              icon: "warning",
-              confirmButtonColor: "#d33",
-            });
-          }
-        }
+    async loadCidades(params) {
+      this.carregamento = true;
+
+      const cidades = await axios.get("api/v1/cidades", {
+        params: {
+          page: params,
+        },
       });
+
+      if (cidades.data.status) {
+        this.cidades = cidades.data.cidades.data;
+
+        this.pagination = {
+          page: cidades.data.cidades.page,
+          perPage: cidades.data.cidades.perPage,
+          lastPage: cidades.data.cidades.lastPage,
+          total: cidades.data.cidades.total,
+        };
+
+        this.carregamento = false;
+      }
+    },
+    setup() {
+      this.loadCidades(this.pagination.page);
+      this.$store.dispatch("verifyToken");
     },
   },
-
   mounted() {
-    this.carregar_cidades();
+    this.setup();
   },
 };
 </script>
-
-
-<style>
-.cadastro-cidade h2 {
-  margin-top: 10px;
-  margin-bottom: 20px;
-}
-
-.linha-top {
-  width: 98%!important;
-  margin: 0 auto;
-}
-
-.button-cadastro {
-  color: rgba(255, 255, 255, 0.9) !important;
-}
-</style>

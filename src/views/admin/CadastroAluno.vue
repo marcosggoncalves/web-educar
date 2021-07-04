@@ -81,32 +81,27 @@ export default {
       dialog: false,
       show: false,
       carregandoSave: false,
-
       usuario: {
-        id: "",
-        nome: "",
-        email: "",
-        instituicao_id: "",
-        senha: "",
+        id: null,
+        nome: null,
+        email: null,
+        instituicao_id: null,
+        senha: null,
       },
-
       error: {
-        nome: "",
-        email: "",
-        instituicao_id: "",
-        senha: "",
+        nome: null,
+        email: null,
+        instituicao_id: null,
+        senha: null,
       },
-
       instituicoes: [],
     };
   },
-
   methods: {
     clear() {
       this.error = {};
       this.usuario = {};
     },
-
     goHome() {
       let redirect = setInterval(() => {
         this.$router.push({ path: "/" });
@@ -116,22 +111,18 @@ export default {
         clearInterval(redirect);
       }, 1000);
     },
-
     carregar_instituicoes() {
       axios
         .get("/api/v1/instituicoes-all")
-
         .then((response) => {
           if (response.data.status) {
             this.instituicoes = response.data.instituicoes;
           }
         })
-
         .catch((error) => {
           console.log("[ERRO AO CARREGAR INSTITUICOES]: " + error);
         });
     },
-
     cadastrar_usuario_organizacao() {
       this.carregandoSave = true;
 
@@ -153,7 +144,6 @@ export default {
               type: "success",
             });
           }
-
           let redirect = setInterval(() => {
             this.$router.push({ path: "/" });
             this.$router.go();
@@ -181,7 +171,6 @@ export default {
         });
     },
   },
-
   mounted() {
     this.carregar_instituicoes();
   },

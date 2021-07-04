@@ -1,15 +1,17 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import Home from '../views/Home.vue';
 import Usuarios from '../views/admin/Usuarios.vue';
 import Instituicoes from '../views/admin/Instituicoes.vue';
 import Permissoes from '../views/admin/Permissoes.vue';
 import Cidades from '../views/admin/Cidades.vue';
-import Trabalhos from '../views/admin/Trabalhos.vue';
+import TrabalhosSemAvaliacao from '../views/admin/TrabalhosSemAvaliacao.vue';
 import Login from '../views/Login.vue';
 import SubmeterProjeto from '../views/admin/SubmeterProjeto.vue';
 import Avaliador from '../views/admin/Avaliador.vue';
 import CadastroAluno from '../views/admin/CadastroAluno.vue';
+import GruposAcesso from '../views/admin/GruposAcesso.vue';
+import TrabalhosRecebidos from '../views/admin/TrabalhosRecebidos.vue';
+import AvaliacoesEncaminhadas from '../views/admin/AvaliacoesEncaminhadas.vue';
 
 Vue.use(VueRouter)
 
@@ -25,16 +27,6 @@ const auth = async (to, from, next) => {
 
 const routes = [
   {
-    path: '/',
-    name: 'Home',
-    component: Home,
-    meta: {
-      allowAnonymous: false
-    },
-    beforeEnter: auth
-  },
-
-  {
     path: '/usuarios',
     name: 'usuarios',
     component: Usuarios,
@@ -43,7 +35,15 @@ const routes = [
     },
     beforeEnter: auth
   },
-
+  {
+    path: '/grupos',
+    name: 'grupos',
+    component: GruposAcesso,
+    meta: {
+      allowAnonymous: false
+    },
+    beforeEnter: auth
+  },
   {
     path: '/cadastre-se',
     name: 'cadastro-aluno',
@@ -62,7 +62,6 @@ const routes = [
     },
     beforeEnter: auth
   },
-
   {
     path: '/cidades',
     name: 'cidades',
@@ -72,7 +71,6 @@ const routes = [
     },
     beforeEnter: auth
   },
-
   {
     path: '/instituicoes',
     name: 'instituicoes',
@@ -82,7 +80,15 @@ const routes = [
     },
     beforeEnter: auth
   },
-
+  {
+    path: '/avaliacoes-encaminhadas',
+    name: 'avaliacoes-encaminhadas',
+    component: AvaliacoesEncaminhadas,
+    meta: {
+      allowAnonymous: false
+    },
+    beforeEnter: auth
+  },
   {
     path: '/permissoes',
     name: 'permissoes',
@@ -92,11 +98,19 @@ const routes = [
     },
     beforeEnter: auth
   },
-
   {
     path: '/trabalhos-recebidos',
+    name: 'trabalhos-recebidos',
+    component: TrabalhosRecebidos,
+    meta: {
+      allowAnonymous: false
+    },
+    beforeEnter: auth
+  },
+  {
+    path: '/trabalhos-para-encaminhamento',
     name: 'trabalhos',
-    component: Trabalhos,
+    component: TrabalhosSemAvaliacao,
     meta: {
       allowAnonymous: false
     },

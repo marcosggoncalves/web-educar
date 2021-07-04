@@ -438,8 +438,6 @@ export default {
         })
         .then((responseSubmterArquivo) => {
 
-          console.log(responseSubmterArquivo.data)
-          
           Swal.fire({
             icon: "success",
             title: "Concluido!",
@@ -491,6 +489,7 @@ export default {
   },
   mounted() {
     this.loadTrabalhos();
+    this.$store.dispatch("verifyToken");
   },
 };
 </script>
