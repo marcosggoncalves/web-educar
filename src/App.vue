@@ -10,7 +10,7 @@
     <v-app v-else>
       <v-navigation-drawer expand-on-hover app>
         <v-list dense>
-          <v-list-item-group v-model="selectedItem" color="green darken-2">
+          <v-list-item-group v-model="selectedItem" color="#07759e">
             <v-list-item
               v-for="(item, index) in menu"
               :key="index"
@@ -18,7 +18,7 @@
               @click="redirecionar(`${item.rota_web}`)"
             >
               <v-list-item-icon>
-                <v-icon>mdi-plus</v-icon>
+                <v-icon>{{item.icon !=null ? item.icon : 'mdi-plus'}}</v-icon>
               </v-list-item-icon>
 
               <v-list-item-title>
@@ -129,7 +129,7 @@ export default {
         text: `Deseja encerra seu acesso ao sistema?`,
         icon: "error",
         showCancelButton: true,
-        confirmButtonColor: "#007744",
+        confirmButtonColor: "#07759e",
         cancelButtonColor: "#d33",
         cancelButtonText: "Cancelar",
         confirmButtonText: `Sim, pode finalizar`,
