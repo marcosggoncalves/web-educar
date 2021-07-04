@@ -136,7 +136,22 @@ export default {
         reverseButtons: true,
       }).then(async (result) => {
         if (result.isConfirmed) {
-          this.$router.go();
+          Swal.fire({
+            title: `Sessão finalizada!`,
+            text: `Você será redirecionado para a tela de login.`,
+            icon: "sucess",
+            showCancelButton: false,
+            reverseButtons: true,
+            showConfirmButton: false
+          })
+          let redirect = setInterval(() => {
+            this.$router.push({ path: "/" });
+            this.$router.go();
+            this.clear();
+            this.carregandoSave = false;
+            clearInterval(redirect);
+          }, 1500);
+          // this.$router.go();
           window.localStorage.clear();
         }
       });
