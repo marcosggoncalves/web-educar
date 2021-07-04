@@ -87,7 +87,14 @@ export default {
                 JSON.stringify(res.data.menu)
               );
               let redirect = setInterval(() => {
-                this.$router.push({ path: "/" });
+                let menu = JSON.parse(localStorage.getItem("menuLateral"));
+
+                if(menu && menu.length > 0){
+                  this.$router.push({ path: menu[0].rota_web });
+                }else{
+                  this.$router.push({ path: "/" });
+                }
+
                 this.$router.go();
                 this.clear();
                 this.carregando = false;
