@@ -52,7 +52,7 @@
     <v-row align="center" justify="space-between" class="linha-top">
       <h2>Cadastro de permissões</h2>
       
-      <v-btn tile class="button-cadastro" color="#00a65a" @click="modal">
+      <v-btn tile class="button-cadastro" color="#07759e" @click="modal">
         <v-icon left>
           mdi-pencil
         </v-icon>

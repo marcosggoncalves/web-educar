@@ -19,7 +19,7 @@
               <v-chip
                 color="#07759e"
                 class="mr-2 mt-4 mb-2"
-                 outlined
+                outlined
                 label
                 v-if="
                   projeto_selecionado &&
@@ -33,12 +33,11 @@
               </v-chip>
             </v-col>
           </v-row>
-
           <div
             class="mt-6"
             v-if="
-              projeto_selecionado.ultimo_status === 'Devolvido para correção' &&
-              projeto_selecionado.avaliacoes < 2
+              projeto_selecionado.ultimo_status == 'Devolvido para correção' &&
+              projeto_selecionado.avaliacoes.length < 2
             "
           >
             <span class="text-h5 mb-2">Enviar nova versão:</span>
@@ -55,7 +54,7 @@
                       prepend-icon="mdi-paperclip"
                     >
                       <template v-slot:selection="{ text }">
-                        <v-chip small label color="#00a65a">
+                        <v-chip small label color="#07759e">
                           {{ text }}
                         </v-chip>
                       </template>
@@ -64,7 +63,7 @@
                   <v-col cols="12" md="2">
                     <v-btn
                       class="button-cadastro"
-                      color="#00a65a"
+                      color="#07759e"
                       fab
                       dark
                       small
@@ -114,7 +113,7 @@
             <v-col cols="12" md="12">
               <label><b>Visão avaliador:</b></label>
               <div class="justificativa">
-                {{ item.justificativa }}
+                <p v-html="item.justificativa"></p>
               </div>
             </v-col>
           </v-row>
@@ -210,7 +209,7 @@
                   prepend-icon="mdi-paperclip"
                 >
                   <template v-slot:selection="{ text }">
-                    <v-chip small label color="#00a65a">
+                    <v-chip small label color="#07759e">
                       {{ text }}
                     </v-chip>
                   </template>
@@ -222,7 +221,7 @@
                 <v-btn
                   tile
                   class="button-cadastro"
-                  color="#00a65a"
+                  color="#07759e"
                   :disabled="!projeto.titulo && projeto.autores.length > 0"
                   :loading="carregandoSave"
                   @click="() => submterProjeto()"
@@ -241,16 +240,17 @@
         <v-progress-circular
           :size="40"
           class="margin"
-          color="#00a65a"
+          color="#07759e"
           indeterminate
         ></v-progress-circular>
       </center>
       <div v-else>
         <div v-if="trabalhos.length === 0">
           <div class="pa-5">
-            <v-alert border="left" colored-border type="warning" elevation="1">
-              Nenhum projeto encontrado!
-            </v-alert>
+            <found
+              message="Não encontramos nenhum projeto submetido!"
+              v-if="trabalhos.length === 0"
+            />
           </div>
         </div>
         <v-card v-else>
@@ -302,7 +302,8 @@
 <script>
 import axios from "../../../axios/service.js";
 import global from "../../../globais.js";
-
+import Swal from "sweetalert2";
+  
 var moment = require("moment");
 moment.locale("pt-br");
 
@@ -436,9 +437,15 @@ export default {
           },
         })
         .then((responseSubmterArquivo) => {
-          this.$toast.open({
-            message: responseSubmterArquivo.data.message,
-            type: "success",
+
+          console.log(responseSubmterArquivo.data)
+          
+          Swal.fire({
+            icon: "success",
+            title: "Concluido!",
+            confirmButtonColor: "#07759e",
+            confirmButtonText: `Certo.`,
+            text: responseSubmterArquivo.data.message,
           });
 
           this.carregandoSave = false;
@@ -474,8 +481,9 @@ export default {
 
       if (trabalhos && trabalhos.data.status) {
         this.trabalhos = trabalhos.data.trabalhos;
-        this.loadTrabalho = false;
       }
+
+      this.loadTrabalho = false;
     },
     abrirDocumento(url) {
       window.open(`${global}${url}`, "_blank");

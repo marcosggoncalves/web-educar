@@ -10,7 +10,6 @@ import Login from '../views/Login.vue';
 import SubmeterProjeto from '../views/admin/SubmeterProjeto.vue';
 import Avaliador from '../views/admin/Avaliador.vue';
 
-
 Vue.use(VueRouter)
 
 const auth = async (to, from, next) => {
