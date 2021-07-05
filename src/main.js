@@ -9,7 +9,7 @@ import found from "./views/components/found.vue";
 import VueToast from 'vue-toast-notification';
 import 'vue-toast-notification/dist/theme-sugar.css';
 
-Vue.config.productionTip = false;
+Vue.config.productionTip = true;
 
 Vue.component('found', found);
 

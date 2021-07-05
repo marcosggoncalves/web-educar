@@ -44,7 +44,7 @@
         Entrar
       </v-btn>
     </v-form>
-    <a href="/cadastre-se" class="link mb-5">Não possui cadastro? <b>Clique Aqui!</b></a>
+    <a @click="() => redirecionar('/cadastre-se')" class="link mb-5">Não possui cadastro? <b>Clique Aqui!</b></a>
   </v-card>
 </template>
 
@@ -63,6 +63,9 @@ export default {
     },
   }),
   methods: {
+    redirecionar(route) {
+      this.$router.push({ path: route });
+    },
     clear() {
       this.error = {
         email: null,
