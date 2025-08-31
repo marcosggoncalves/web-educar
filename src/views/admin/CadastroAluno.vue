@@ -1,5 +1,5 @@
 <template>
-  <v-card class="mx-auto pl-6 pr-6 mt-10" min-width="400" outlined>
+  <v-card elevation="0" class="mx-auto pl-6 pr-6 mt-10" min-width="400" outlined>
     <v-list-item class="center d-flex align-center justify-center">
       <v-list-item-avatar tile size="300" height="100">
         <v-img
@@ -18,6 +18,8 @@
         v-model="usuario.nome"
         label="Nome:"
         required
+        dense
+        outlined
         :error-messages="error.nome"
       ></v-text-field>
 
@@ -26,6 +28,8 @@
         label="Email:"
         required
         :error-messages="error.email"
+        dense
+        outlined
       ></v-text-field>
 
       <v-autocomplete
@@ -40,6 +44,7 @@
         dense
         deletable-chips
         :error-messages="error.instituicao_id"
+        outlined
       ></v-autocomplete>
 
       <v-text-field
@@ -50,21 +55,26 @@
         label="Senha:"
         required
         :error-messages="error.senha"
+        dense
+        outlined
       ></v-text-field>
 
       <div class="mb-4">
-        <v-btn
-          color="#07759e"
-          class="mr-4 mt-6 white--text"
-          :loading="carregandoSave"
-          @click="cadastrar_usuario_organizacao"
-        >
-          <v-icon dark> mdi-check </v-icon>
-          Salvar
+        <v-btn small color="warning" outlined class="mr-4" @click="goHome">
+          <v-icon dark> mdi-undo </v-icon>
+          Voltar
         </v-btn>
 
-        <v-btn color="error" class="mr-4 mt-6" @click="goHome">
-          <v-icon dark> mdi-close </v-icon>
+        <v-btn
+         small
+          color="#07759e"
+          class="mr-4 white--text"
+          :loading="carregandoSave"
+          @click="cadastrar_usuario_organizacao"
+          dense
+        >
+          <v-icon dark> mdi-check </v-icon>
+          Finalizar
         </v-btn>
       </div>
     </v-form>

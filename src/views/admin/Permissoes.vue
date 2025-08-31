@@ -14,58 +14,66 @@
             ></v-switch
           ></v-card-title>
           <v-divider></v-divider>
-          <v-form ref="form" class="pa-8 mx-auto">
-            <v-row>
-              <v-col cols="12" md="12">
+          <v-form ref="form" class="pa-3 mx-auto">
+            <v-row dense>
+              <v-col cols="12" md="6">
                 <v-text-field
                   color="#07759e"
                   v-model="permissao.nome"
                   :error-messages="error.nome"
                   label="Nome permissão:"
                   required
+                   outlined
+                  dense
                 ></v-text-field>
               </v-col>
 
-              <v-col cols="12" md="12">
+              <v-col cols="12" md="6">
                 <v-text-field
                   color="#07759e"
                   v-model="permissao.icon"
                   :error-messages="error.icon"
                   label="Selecione o icone:"
                   required
+                   outlined
+                      dense
                 ></v-text-field>
               </v-col>
 
-              <v-col cols="12" md="12">
+              <v-col cols="12" md="6">
                 <v-text-field
                   color="#07759e"
                   v-model="permissao.rota_web"
                   :error-messages="error.rota_web"
                   label="Link da página:"
                   required
+                   outlined
+                      dense
                 ></v-text-field>
               </v-col>
 
-              <v-col cols="12" md="12">
+              <v-col cols="12" md="6">
                 <v-text-field
                   color="#07759e"
                   v-model="permissao.rota_api"
                   :error-messages="error.rota_api"
                   label="Link da Api:"
                   required
+                   outlined
+                      dense
                 ></v-text-field>
               </v-col>
             </v-row>
 
-            <v-btn color="error" class="mr-4 mt-6" @click="clear">
+            <v-btn color="error" dense class="mr-4" @click="clear">
               <v-icon dark> mdi-close </v-icon>
             </v-btn>
 
             <v-btn
               color="#07759e"
-              outlined
-              class="mr-4 mt-6"
+              class="white--text"
               @click="salvar"
+              dense
               :disabled="carregamentoSave"
               :loading="carregamentoSave"
             >
@@ -87,7 +95,7 @@
 
       <found v-else-if="permissoes.length === 0" />
 
-      <v-card v-else>
+      <v-card v-else elevation="0">
         <v-card-title>
           <b>Permissões</b>
           <v-spacer></v-spacer>
@@ -97,7 +105,7 @@
           </v-btn>
         </v-card-title>
 
-        <v-simple-table>
+        <v-simple-table dense>
           <template v-slot:default>
             <thead>
               <tr>

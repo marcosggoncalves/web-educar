@@ -1,92 +1,49 @@
-
 <template>
   <div>
     <div>
       <v-dialog v-model="dialog" max-width="600px">
         <v-card>
-          <v-card-title
-            ><b>Novo usuário</b>
-             </v-switch?
-          ></v-card-title>
+          <v-card-title><b>Novo usuário</b>
+            </v-switch?></v-card-title>
           <v-divider></v-divider>
-          <v-form ref="form" class="pa-8 mx-auto">
-            <v-row>
-              <v-col cols="12" md="12">
-                <v-text-field
-            v-model="usuario.nome"
-            label="Nome:"
-            required
-            :error-messages="error.nome"
-          ></v-text-field>
+          <v-form ref="form" class="pa-3   mx-auto">
+            <v-row dense>
+              <v-col cols="12" md="6">
+                <v-text-field outlined dense v-model="usuario.nome" label="Nome:" required
+                  :error-messages="error.nome"></v-text-field>
               </v-col>
 
-              <v-col cols="12" md="12">
-              <v-text-field
-            v-model="usuario.email"
-            label="Email:"
-            required
-            :error-messages="error.email"
-          ></v-text-field>
+              <v-col cols="12" md="6">
+                <v-text-field outlined dense v-model="usuario.email" label="Email:" required
+                  :error-messages="error.email"></v-text-field>
               </v-col>
 
-              <v-col cols="12" md="12">
-               <v-autocomplete
-            :items="grupos"
-            label="Grupo de Permissões"
-            v-model="usuario.grupo_id"
-            item-value="id"
-            item-text="nome"
-            auto-select-first
-            chips
-            clearable
-            dense
-            deletable-chips
-            :error-messages="error.grupo_id"
-          ></v-autocomplete>
+              <v-col cols="12" md="6">
+                <v-autocomplete outlined dense:items="grupos" label="Grupo de Permissões" v-model="usuario.grupo_id"
+                  item-value="id" item-text="nome" auto-select-first chips clearable dense deletable-chips
+                  :error-messages="error.grupo_id"></v-autocomplete>
 
               </v-col>
 
-              <v-col cols="12" md="12">
-                 <v-autocomplete
-            :items="instituicoes"
-            label="Instituição"
-            v-model="usuario.instituicao_id"
-            item-value="id"
-            item-text="nome"
-            auto-select-first
-            chips
-            clearable
-            dense
-            deletable-chips
-            :error-messages="error.instituicao_id"
-          ></v-autocomplete>
+              <v-col cols="12" md="6">
+                <v-autocomplete outlined dense :items="instituicoes" label="Instituição"
+                  v-model="usuario.instituicao_id" item-value="id" item-text="nome" auto-select-first chips clearable
+                  dense deletable-chips :error-messages="error.instituicao_id"></v-autocomplete>
               </v-col>
 
-              <v-col cols="12" md="12">
-                 <v-text-field
-            v-model="usuario.senha"
-            :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
-            :type="show ? 'text' : 'password'"
-            @click:append="show = !show"
-            label="Senha:"
-            required
-            :error-messages="error.senha"
-          ></v-text-field>
+              <v-col cols="12" md="6">
+                <v-text-field outlined dense v-model="usuario.senha" :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
+                  :type="show ? 'text' : 'password'" @click:append="show = !show" label="Senha:" required
+                  :error-messages="error.senha"></v-text-field>
               </v-col>
             </v-row>
 
-            <v-btn color="error" class="mr-4 mt-6" @click="clear">
+            <v-btn color="error" class="mr-4" @click="clear">
               <v-icon dark> mdi-close </v-icon>
             </v-btn>
 
-            <v-btn
-              color="#07759e"
-              outlined
-              class="mr-4 mt-6"
-              @click="salvar"
-              :disabled="carregamentoSave"
-              :loading="carregamentoSave"
-            >
+            <v-btn color="#07759e"  class="mr-4  white--text" @click="salvar" :disabled="carregamentoSave"
+              :loading="carregamentoSave">
               <v-icon dark> mdi-check </v-icon>
               Salvar
             </v-btn>
@@ -95,17 +52,12 @@
       </v-dialog>
 
       <center v-if="carregamento" class="mt-10">
-        <v-progress-circular
-          :size="40"
-          class="ma-10"
-          color="#07759e"
-          indeterminate
-        ></v-progress-circular>
+        <v-progress-circular :size="40" class="ma-10" color="#07759e" indeterminate></v-progress-circular>
       </center>
 
       <found v-else-if="usuarios.length === 0" />
 
-      <v-card v-else>
+      <v-card elevation="0" v-else>
         <v-card-title>
           <b>Usuários</b>
           <v-spacer></v-spacer>
@@ -115,7 +67,7 @@
           </v-btn>
         </v-card-title>
 
-        <v-simple-table>
+        <v-simple-table dense>
           <template v-slot:default>
             <thead>
               <tr>
@@ -131,10 +83,10 @@
               <tr v-for="(item, index) in usuarios" :key="index">
                 <td class="text-left">{{ item.id }}</td>
                 <td class="text-left">{{ item.nome }}</td>
-               <td class="text-left">{{ item.email }}</td>
-               <td class="text-left">{{ item.tipo_usuario }}</td>
-               <td class="text-left">{{ item.grupo_acesso }}</td>
-               <td class="text-left">{{ item.instituicao_nome }}</td>
+                <td class="text-left">{{ item.email }}</td>
+                <td class="text-left">{{ item.tipo_usuario }}</td>
+                <td class="text-left">{{ item.grupo_acesso }}</td>
+                <td class="text-left">{{ item.instituicao_nome }}</td>
                 <td class="text-left">
                   <v-menu bottom left>
                     <template v-slot:activator="{ on, attrs }">
@@ -145,9 +97,7 @@
 
                     <v-list>
                       <v-list-item @click="editar(item)">
-                        <v-list-item-title
-                          >Alterar informações</v-list-item-title
-                        >
+                        <v-list-item-title>Alterar informações</v-list-item-title>
                       </v-list-item>
                       <v-list-item @click="excluir(item.id)">
                         <v-list-item-title>Excluir</v-list-item-title>
@@ -162,16 +112,9 @@
       </v-card>
     </div>
     <div class="text-left mt-5">
-      <v-pagination
-        v-model="pagination.page"
-        :length="pagination.lastPage"
-        :total-visible="pagination.perPage"
-        color="#07759e"
-        v-if="usuarios.length > 0"
-        @input="(page) => loadUsuarios(page)"
-        @next="() => loadUsuarios(pagination.page)"
-        @previous="() => loadUsuarios(pagination.page)"
-      ></v-pagination>
+      <v-pagination v-model="pagination.page" :length="pagination.lastPage" :total-visible="pagination.perPage"
+        color="#07759e" v-if="usuarios.length > 0" @input="(page) => loadUsuarios(page)"
+        @next="() => loadUsuarios(pagination.page)" @previous="() => loadUsuarios(pagination.page)"></v-pagination>
     </div>
   </div>
 </template>

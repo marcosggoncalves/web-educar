@@ -6,18 +6,20 @@
         <v-card>
           <v-card-title><b>Nova instituição</b> </v-card-title>
           <v-divider></v-divider>
-          <v-form ref="form" class="pa-8 mx-auto">
+          <v-form ref="form" class="pa-3 mx-auto">
             <v-row>
-              <v-col cols="12" md="12">
+              <v-col cols="12" md="6">
                 <v-text-field
                   v-model="instituicao.nome"
                   label="Nome:"
                   required
+                     dense
+                  outlined
                   :error-messages="error.nome"
                 ></v-text-field>
               </v-col>
 
-              <v-col cols="12" md="12">
+              <v-col cols="12" md="6">
                 <v-autocomplete
                   :items="cidades"
                   label="Cidade"
@@ -28,6 +30,7 @@
                   chips
                   clearable
                   dense
+                  outlined
                   deletable-chips
                   required
                   :error-messages="error.cidade_id"
@@ -35,14 +38,13 @@
               </v-col>
             </v-row>
 
-            <v-btn color="error" class="mr-4 mt-6" @click="clear">
+            <v-btn color="error" class="mr-4" @click="clear">
               <v-icon dark> mdi-close </v-icon>
             </v-btn>
 
             <v-btn
               color="#07759e"
-              outlined
-              class="mr-4 mt-6"
+              class="mr-4 white--text"
               @click="salvar"
               :disabled="carregamentoSave"
               :loading="carregamentoSave"
@@ -65,7 +67,7 @@
 
       <found v-else-if="instituicoes.length === 0" />
 
-      <v-card v-else>
+      <v-card elevation="0" v-else>
         <v-card-title>
           <b>Instituições</b>
           <v-spacer></v-spacer>
@@ -75,7 +77,7 @@
           </v-btn>
         </v-card-title>
 
-        <v-simple-table>
+        <v-simple-table dense>
           <template v-slot:default>
             <thead>
               <tr>

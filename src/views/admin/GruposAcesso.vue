@@ -15,7 +15,7 @@
             ></v-progress-circular>
           </center>
 
-          <v-row v-else>
+          <v-row dense v-else>
             <v-col cols="12" md="12">
               <v-autocomplete
                 :items="grupos"
@@ -28,12 +28,13 @@
                 chips
                 clearable
                 dense
+                 outlined
                 deletable-chips
               ></v-autocomplete>
             </v-col>
 
             <v-col cols="12" md="12">
-              <v-row>
+              <v-row dense>
                 <v-col
                   cols="12"
                   md="6"
@@ -76,23 +77,26 @@
       <v-card>
         <v-card-title><b>Novo Grupo</b></v-card-title>
         <v-divider></v-divider>
-        <v-form ref="form" class="pa-8 mx-auto">
+        <v-form ref="form" class="pa-4 mx-auto">
           <v-text-field
             color="#07759e"
             v-model="grupo.nome"
             :error-messages="error.nome"
             label="Nome Grupo:"
             required
+             outlined
+                       
+                      dense
           ></v-text-field>
 
-          <v-btn color="error" class="mr-4 mt-6" @click="clear">
+          <v-btn color="error" class="mr-4" @click="clear">
             <v-icon dark> mdi-close </v-icon>
           </v-btn>
 
           <v-btn
             color="#07759e"
-            outlined
-            class="mr-4 mt-6"
+            dense
+            class="mr-4 white--text"
             @click="salvar"
             :disabled="carregamentoSave"
             :loading="carregamentoSave"
@@ -111,7 +115,7 @@
         indeterminate
       ></v-progress-circular>
     </center>
-    <v-card v-else>
+    <v-card elevation="0" v-else>
       <v-card-title>
         Grupos de Acesso
         <v-spacer></v-spacer>
@@ -122,7 +126,7 @@
       </v-card-title>
       <found v-if="grupos.length === 0" />
 
-      <v-simple-table v-else>
+      <v-simple-table dense v-else>
         <template v-slot:default>
           <thead>
             <tr>

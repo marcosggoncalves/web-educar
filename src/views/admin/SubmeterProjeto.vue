@@ -48,6 +48,8 @@
                   <v-col cols="12" md="10">
                     <v-file-input
                       v-model="fileReenvio"
+                      outlined
+                      dense
                       accept="application/pdf"
                       placeholder="Faça upload da escrita do seu projeto"
                       label="Upload odo arquivo .PDF"
@@ -135,7 +137,7 @@
               <v-icon dark> mdi-plus </v-icon>
             </v-btn>
 
-            Adicionar novo autor
+            Aluno(s)
           </v-card-title>
 
           <v-form class="pa-5">
@@ -149,6 +151,8 @@
                 <v-text-field
                   v-model="projeto.autores[index].nome"
                   label="Nome:"
+                  outlined
+                  dense
                   required
                 ></v-text-field>
               </v-col>
@@ -156,6 +160,8 @@
                 <v-text-field
                   v-model="projeto.autores[index].email"
                   label="Email:"
+                  outlined
+                  dense
                   required
                 ></v-text-field>
               </v-col>
@@ -203,6 +209,8 @@
               <v-col cols="12" md="12">
                 <v-file-input
                   v-model="file"
+                  outlined
+                  dense
                   accept="application/pdf"
                   placeholder="Faça upload da escrita do seu projeto"
                   label="Upload odo arquivo .PDF"

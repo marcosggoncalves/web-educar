@@ -9,7 +9,7 @@
     </v-app>
     <v-app v-else>
       <v-navigation-drawer expand-on-hover app>
-        <v-list dense>
+        <v-list nav dense>
           <v-list-item-group v-model="selectedItem" color="#07759e">
             <v-list-item
               v-for="(item, index) in menu"
@@ -34,9 +34,7 @@
       <v-app-bar
         app
         color="rgba(255,255,255,0.9)"
-        dark
-        fixed
-        scroll-target="#scrolling-techniques-4"
+        elevation="0"
       >
         <div class="d-flex align-center auto">
           <v-toolbar-title></v-toolbar-title>

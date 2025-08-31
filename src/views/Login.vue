@@ -1,10 +1,9 @@
 <template>
-  <v-card class="mx-auto pl-6 pr-6 mt-16" min-width="400" outlined>
+  <v-card elevation="0" class="mx-auto pl-6 pr-6 mt-16" min-width="400" outlined>
     <v-list-item class="center">
-      <v-list-item-avatar tile size="200">
+      <v-list-item-avatar tile size="150">
         <v-img
           alt="UEMS - Controle de projetos"
-          class="shrink mr-2"
           contain
           :src="require('../../public/img/logo.png')"
           transition="scale-transition"
@@ -18,6 +17,8 @@
         v-model="email"
         label="Email:"
         :disabled="carregando"
+        dense
+        outlined
         required
         :error-messages="error.email"
       ></v-text-field>
@@ -26,11 +27,12 @@
         v-model="senha"
         label="Senha:"
         :disabled="carregando"
+        dense
+        outlined
         :error-messages="error.senha"
         type="password"
         required
       ></v-text-field>
-
 
       <v-btn
         color="#07759e"

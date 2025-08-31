@@ -6,35 +6,38 @@
         <v-card>
           <v-card-title><b>Nova cidade</b> </v-card-title>
           <v-divider></v-divider>
-          <v-form ref="form" class="pa-8 mx-auto">
+          <v-form ref="form" class="pa-3 mx-auto">
             <v-row>
-              <v-col cols="12" md="12">
+              <v-col cols="12" md="6">
                 <v-text-field
                   v-model="cidade.nome"
                   label="Nome:"
+                     dense
+                  outlined
                   required
                   :error-messages="error.nome"
                 ></v-text-field>
               </v-col>
 
-               <v-col cols="12" md="12">
+               <v-col cols="12" md="6">
                 <v-text-field
                   v-model="cidade.uf"
                   label="UF:"
+                     dense
+                  outlined
                   required
                   :error-messages="error.uf"
                 ></v-text-field>
               </v-col>
             </v-row>
 
-            <v-btn color="error" class="mr-4 mt-6" @click="clear">
+            <v-btn color="error" class="mr-4" @click="clear">
               <v-icon dark> mdi-close </v-icon>
             </v-btn>
 
             <v-btn
               color="#07759e"
-              outlined
-              class="mr-4 mt-6"
+              class="mr-4 white--text"
               @click="salvar"
               :disabled="carregamentoSave"
               :loading="carregamentoSave"
@@ -57,7 +60,7 @@
 
       <found v-else-if="cidades.length === 0" />
 
-      <v-card v-else>
+      <v-card elevation="0" v-else>
         <v-card-title>
           <b>Cidades</b>
           <v-spacer></v-spacer>
@@ -67,7 +70,7 @@
           </v-btn>
         </v-card-title>
 
-        <v-simple-table>
+        <v-simple-table dense>
           <template v-slot:default>
             <thead>
               <tr>

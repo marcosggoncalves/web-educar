@@ -1,1 +1,1 @@
-export default  global =  'http://sistemadourados.ddns.net:2023/';
+export default  global =  'http://localhost:1000/';
