@@ -17,22 +17,22 @@ Para acessar aplicação, existe 3 tipos de visualizações de acesso: Aluno, Av
 Para acessar o projeto backend <a href="https://github.com/marcosggoncalves/api-educar">Repositório</a>
 
  ## Tela 1 - Login
-![Painel da Aplicação - TELA 1](https://github.com/marcosggoncalves/web-educar/prints/Login.png)
+![Painel da Aplicação - TELA 1](https://github.com/marcosggoncalves/web-educar/blob/master/prints/Login.png)
 
  ## Tela 2 - Cadastro Aluno
-![Painel da Aplicação - TELA 1](https://github.com/marcosggoncalves/web-educar/prints/Cadastro.png)
+![Painel da Aplicação - TELA 1](https://github.com/marcosggoncalves/web-educar/blob/master/prints/Cadastro.png)
 
  ## Tela 3 - Visão Coordenação(Organização)
-![Painel da Aplicação - TELA 1](https://github.com/marcosggoncalves/web-educar/prints/Coordenacao Menu.png)
+![Painel da Aplicação - TELA 1](https://github.com/marcosggoncalves/web-educar/blob/master/prints/Coordenacao%20Menu.png)
 
-![Painel da Aplicação - TELA 1](https://github.com/marcosggoncalves/web-educar/prints/Coordenacao.png)
+![Painel da Aplicação - TELA 1](https://github.com/marcosggoncalves/web-educar/blob/master/prints/Coordenacao.png)
 
  ## Tela 4 - Visão Aluno
-![Painel da Aplicação - TELA 1](https://github.com/marcosggoncalves/web-educar/prints/Aluno.png)
+![Painel da Aplicação - TELA 1](https://github.com/marcosggoncalves/web-educar/blob/master/prints/Aluno.jpg)
 
-![Painel da Aplicação - TELA 2](https://github.com/marcosggoncalves/web-educar/prints/Aluno Revisao.jpg)
+![Painel da Aplicação - TELA 2](https://github.com/marcosggoncalves/web-educar/blob/master/prints/Aluno%20Revisao.jpg)
 
  ## Tela 4 - Visão Avaliador
-![Painel da Aplicação - TELA 1](https://github.com/marcosggoncalves/web-educar/prints/Avaliador.jpg)
+![Painel da Aplicação - TELA 1](https://github.com/marcosggoncalves/web-educar/blob/master/prints/Avaliador.jpg)
 
-![Painel da Aplicação - TELA 2](https://github.com/marcosggoncalves/web-educar/prints/Avaliador Avaliacao.png)
+![Painel da Aplicação - TELA 2](https://github.com/marcosggoncalves/web-educar/blob/master/prints/Avaliador%20Avaliacao.png)
